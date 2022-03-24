@@ -1,0 +1,16 @@
+{
+    "name": "antonromanov/taskforce",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Anton Romanov",
+            "email": "609990@gmail.com"
+        }
+    ],
+    "autoload": {
+      "psr-4": {
+          "Taskforce\\": "src/"
+      }
+    },
+    "require": {}
+}
