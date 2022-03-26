@@ -7,7 +7,9 @@ USE taskforce;
 
 CREATE TABLE city (
   id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
-  title VARCHAR(255) NOT NULL
+  title VARCHAR(255) NOT NULL,
+  lat DECIMAL(10, 8),
+  lng DECIMAL(10, 8)
 );
 
 CREATE TABLE user (
@@ -19,10 +21,8 @@ CREATE TABLE user (
   phone VARCHAR(11) UNIQUE,
   email VARCHAR(128) NOT NULL UNIQUE,
   telegram VARCHAR(64) UNIQUE,
-  rating INT,
-  characteristic TEXT,
+  info TEXT,
   city_id INT NOT NULL,
-  specialty VARCHAR(255),
   role ENUM('customer', 'executor'),
   token TEXT,
   password CHAR(255) NOT NULL,
@@ -33,6 +33,14 @@ CREATE TABLE category (
   id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
   code VARCHAR(128) NOT NULL UNIQUE,
   title VARCHAR(128) NOT NULL
+);
+
+CREATE TABLE specialization (
+user_id INT  NOT NULL,
+category_id INT NOT NULL,
+PRIMARY KEY (user_id, category_id),
+FOREIGN KEY (user_id) REFERENCES user(id),
+FOREIGN KEY (category_id) REFERENCES category(id)
 );
 
 CREATE TABLE task (
@@ -56,6 +64,7 @@ CREATE TABLE task (
 CREATE TABLE attachment (
   id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
   task_id INT NOT NULL,
+  title VARCHAR(255) NOT NULL,
   path VARCHAR(255) NOT NULL,
   FOREIGN KEY (task_id) REFERENCES task(id)
 );
