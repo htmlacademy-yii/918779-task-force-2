@@ -1,6 +1,6 @@
 <?php
 
-namespace Taskforce\Actions;
+namespace Taskforce;
 
 abstract class DefaultAction {
 
@@ -17,7 +17,7 @@ abstract class DefaultAction {
 
     abstract public function getInternalName();
 
-    abstract public function checkRights(int $idUser):bool;
+    abstract public function checkRights();
 
 };
 

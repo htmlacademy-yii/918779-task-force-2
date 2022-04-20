@@ -1,6 +1,6 @@
 <?php
 
-namespace Taskforce\Actions;
+namespace Taskforce;
 
 class DoneAction extends DefaultAction {
 
@@ -18,12 +18,12 @@ class DoneAction extends DefaultAction {
 
     }
 
-    public function checkRights(int $idUser):bool { 
-        
-        return $this->idCustomer === $idUser;
+    public function checkRights() {
+
+        return 'customer';
 
     }
-        
+
 };
 
 ?>

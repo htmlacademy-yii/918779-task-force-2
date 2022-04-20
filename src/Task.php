@@ -13,6 +13,7 @@ class Task
     public const CUSTOMER = 'customer';
     public const EXECUTOR = 'executor';
 
+    // Статус задания в зависимости от выполненного действия
     public const NEXT_STATUS = [
         CancelAction::ACTION_CANCEL => self::STATUS_CANCELED,
         RespondAction::ACTION_RESPOND => self::STATUS_WORKING,
@@ -20,6 +21,7 @@ class Task
         RefusedAction::ACTION_REFUSED => self::STATUS_FAILED,
     ];
 
+    //Действия в зависимости от статуса задания и роли пользователя
     public const ALLOWED_ACTIONS = [
         self::STATUS_NEW => [
             self::CUSTOMER => CancelAction::ACTION_CANCEL,
@@ -30,8 +32,6 @@ class Task
             self::EXECUTOR => RefusedAction::ACTION_REFUSED,
         ],
     ];
-
-    private $idUser;
 
     private function setIdCustomer ($idUser) {
         $this->idCustomer = $idUser;
@@ -46,6 +46,7 @@ class Task
         $this->setIdExecutor($idExecutor);
     }
 
+    //Карта статусов заданий
     public static $mapStatuses = [
         self::STATUS_NEW => 'Новое',
         self::STATUS_CANCELED => 'Отменено',
@@ -54,6 +55,11 @@ class Task
         self::STATUS_FAILED => 'Провалено'
     ];
 
+    public static function getMapStatuses() {
+        return self::$mapStatuses;
+    }
+
+    //Карта действий пользователя
     public static $mapActions = [
         CancelAction::ACTION_CANCEL => 'Отменить задание',
         RespondAction::ACTION_RESPOND => 'Откликнуться на задание',
@@ -61,18 +67,16 @@ class Task
         RefusedAction::ACTION_REFUSED => 'Отказаться от задания'
     ];
 
-    public static function getMapStatuses() {
-        return self::$mapStatuses;
-    }
-
     public static function getMapActions() {
         return self::$mapActions;
     }
 
+    //Статус задания в зависимости от действия
     public function getStatusByAction($action) {
         return self::NEXT_STATUS[$action->getInternalName()] ?? '';
     }
 
+    //Доступные действия в зависимости от статуса задания и роли пользоввателя
     public function getAllowedAction($status, $action) {
         return self::ALLOWED_ACTIONS[$status][$action->checkRights()] ?? [];
     }

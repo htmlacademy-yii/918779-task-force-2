@@ -1,6 +1,6 @@
 <?php
 
-namespace Taskforce\Actions;
+namespace Taskforce;
 
 class CancelAction extends DefaultAction {
 
@@ -18,9 +18,9 @@ class CancelAction extends DefaultAction {
 
     }
 
-    public function checkRights(int $idUser): bool {
+    public function checkRights() {
 
-        return $this->idCustomer === $idUser;
+        return 'customer';
 
     }
 

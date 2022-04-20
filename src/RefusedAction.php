@@ -1,6 +1,6 @@
 <?php
 
-namespace Taskforce\Actions;
+namespace Taskforce;
 
 class RefusedAction extends DefaultAction {
 
@@ -18,9 +18,9 @@ class RefusedAction extends DefaultAction {
 
     }
 
-    public function checkRights(int $idUser):bool { 
-        
-        return $this->idExecutor === $idUser;
+    public function checkRights() {
+
+        return 'executor';
 
     }
 
