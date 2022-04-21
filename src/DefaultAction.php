@@ -17,7 +17,7 @@ abstract class DefaultAction {
 
     abstract public function getInternalName();
 
-    abstract public function checkRights();
+    abstract public function checkRights(int $idUser):bool;
 
 };
 

@@ -18,9 +18,16 @@ class RefusedAction extends DefaultAction {
 
     }
 
-    public function checkRights() {
+    public function checkRights(int $idUser):bool {
 
-        return 'executor';
+        if ($this->idCustomer === $idUser)
+
+        return 'customer';
+
+        else {
+
+            return 'executor';
+        }
 
     }
 
