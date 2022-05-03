@@ -1,6 +1,7 @@
 <?php
 
 namespace  Taskforce;
+use Taskforce\Exceptions\NoAvailableActionsException;
 
 class Task
 {
@@ -41,7 +42,7 @@ class Task
         $this->idExecutor = $idUser;
     }
 
-    public function __construct($idExecutor, $idCustomer = null) {
+    public function __construct(int $idExecutor, int $idCustomer = null) {
         $this->setIdCustomer($idCustomer);
         $this->setIdExecutor($idExecutor);
     }
@@ -55,7 +56,7 @@ class Task
         self::STATUS_FAILED => 'Провалено'
     ];
 
-    public static function getMapStatuses() {
+    public static function getMapStatuses(): array {
         return self::$mapStatuses;
     }
 
@@ -67,18 +68,23 @@ class Task
         RefusedAction::ACTION_REFUSED => 'Отказаться от задания'
     ];
 
-    public static function getMapActions() {
+    public static function getMapActions(): array {
         return self::$mapActions;
     }
 
     //Статус задания в зависимости от действия
-    public function getStatusByAction($action) {
+    public function getStatusByAction(string $action) {
         return self::NEXT_STATUS[$action->getInternalName()] ?? '';
     }
 
     //Доступные действия в зависимости от статуса задания и роли пользоввателя
-    public function getAllowedAction($status, $action) {
+    public function getAllowedAction(string $status, string $action) {
         return self::ALLOWED_ACTIONS[$status][$action->checkRights()] ?? [];
+
+        if (empty($result))  {
+                throw new NoAvailableActionsException();
+        };
+        return $result;
     }
 }
 ?>

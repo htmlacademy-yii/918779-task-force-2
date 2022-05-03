@@ -4,10 +4,24 @@ use Taskforce\Task;
 
 require_once "vendor/autoload.php";
 
-$task1 = new Task(1, );
-$task2 = new Task (2, 23);
+$task = new Task (1, 2);
 
-assert($task1->getStatusByAction(Task::DoneAction) == Task::STATUS_DONE);
-assert($task1->getAllowedAction(Task::STATUS_NEW,Task::CancelAction) == Task::ACTION_CANCEL);
+try {
 
-?>
+    assert($task->getAllowedAction(Task::STATUS_NEW,Task::CancelAction) == Task::ACTION_CANCEL);
+
+} catch (NoAvailableActionsException $e) {
+
+    echo $e->getMessage();
+
+}
+
+try {
+
+    var_dump($task);
+
+} catch (NoAvailableActionsException $e) {
+
+    echo $e->getMessage();
+
+}
