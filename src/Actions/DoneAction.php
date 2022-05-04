@@ -1,6 +1,6 @@
 <?php
 
-namespace Taskforce;
+namespace Taskforce\Actions;
 
 class DoneAction extends DefaultAction {
 
