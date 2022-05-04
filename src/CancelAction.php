@@ -18,7 +18,7 @@ class CancelAction extends DefaultAction {
 
     }
 
-    public function checkRights(int $idUser, int $idCustomer, int $idExecutor):bool {
+    public function checkRights(int $idUser): bool {
 
         return $this->idCustomer === $idUser;
 
