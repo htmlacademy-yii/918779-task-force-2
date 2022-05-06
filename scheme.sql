@@ -8,8 +8,8 @@ USE taskforce;
 CREATE TABLE city (
   id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
   title VARCHAR(255) NOT NULL,
-  lat DECIMAL(10, 8),
-  lng DECIMAL(10, 8)
+  lat DECIMAL(13, 10),
+  lng DECIMAL(13, 10)
 );
 
 CREATE TABLE user (
@@ -18,7 +18,7 @@ CREATE TABLE user (
   name VARCHAR(128) NOT NULL,
   birthday DATE,
   avatar VARCHAR(255),
-  phone VARCHAR(11) UNIQUE,
+  phone VARCHAR(12) UNIQUE,
   email VARCHAR(128) NOT NULL UNIQUE,
   telegram VARCHAR(64) UNIQUE,
   info TEXT,
@@ -31,16 +31,16 @@ CREATE TABLE user (
 
 CREATE TABLE category (
   id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
-  code VARCHAR(128) NOT NULL UNIQUE,
+  icon VARCHAR(128) NOT NULL UNIQUE,
   title VARCHAR(128) NOT NULL
 );
 
 CREATE TABLE specialization (
-user_id INT  NOT NULL,
-category_id INT NOT NULL,
-PRIMARY KEY (user_id, category_id),
-FOREIGN KEY (user_id) REFERENCES user(id),
-FOREIGN KEY (category_id) REFERENCES category(id)
+  user_id INT  NOT NULL,
+  category_id INT NOT NULL,
+  PRIMARY KEY (user_id, category_id),
+  FOREIGN KEY (user_id) REFERENCES user(id),
+  FOREIGN KEY (category_id) REFERENCES category(id)
 );
 
 CREATE TABLE task (
@@ -51,8 +51,8 @@ CREATE TABLE task (
   estimate INT,
   runtime DATE,
   city_id INT NOT NULL,
-  lat DECIMAL(10, 8),
-  lng DECIMAL(10, 8),
+  lat DECIMAL(13, 10),
+  lng DECIMAL(13, 10),
   user_id INT NOT NULL,
   category_id INT NOT NULL,
   status ENUM('new', 'canceled', 'working', 'done', 'failed'),
