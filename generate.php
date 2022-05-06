@@ -4,11 +4,12 @@ use Taskforce\Exceptions\FileFormatException;
 use Taskforce\Exceptions\SourceFileException;
 use Taskforce\Import\FileImport;
 use Taskforce\Import\CityImport;
+use Taskforce\Import\CategoryImport;
 
 require_once "vendor/autoload.php";
 
 try {
-    $dataImporter = new FileImport('./data/category.csv');
+    $dataImporter = new CategoryImport('./data/category.csv');
     $dataImporter->import();
     $dataImporter->writeDb('./data');
 }
