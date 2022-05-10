@@ -1,6 +1,0 @@
-registration,name,birthday,avatar,phone,email,telegram,info,city_id,role,token,password
-2022-01-07,Петр,2000-01-01,img/avatars/1.png,89815468978,petr@petr.com,t.me/petr,Специалист,1,executor,vk.com,oqwerty1
-2022-01-08,Илья,1996-11-13,img/avatars/2.png,89217651234,ilia@ilia.ru,t.me/ilia,Профессионал,1,executor,vk.com,oqwerty2
-2022-01-09,Иван,1982-03-07,img/avatars/3.png,89111234568,ivan@yandex.ru,t.me/ivan,Профессионал,1,executor,vk.com,oqwerty3
-2022-01-10,Анна,1981-02-25,img/avatars/4.png,89021234567,anna@karenina.pro,t.me/anna,Профессионал,1,customer,vk.com,oqwerty4
-2022-01-11,Елена,1986-05-01,img/avatars/5.png,89067891234,elena@rom.shop,t.me/elena,Специалист,1,customer,vk.com,oqwerty5
