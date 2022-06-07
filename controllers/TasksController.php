@@ -3,28 +3,65 @@
 namespace app\controllers;
 
 use Yii;
-use yii\filters\AccessControl;
+
 use yii\web\Controller;
-use yii\web\Response;
-use yii\filters\VerbFilter;
-use app\models\LoginForm;
-use app\models\ContactForm;
 
 use app\models\Task;
 use app\models\Category;
 use app\models\City;
+use app\models\TaskFilterForm;
+use app\models\Response;
 
-class TasksController extends Controller
-{
+use yii\db\Expression;
+use yii\web\NotFoundHttpException;
 
-   public function actionIndex() {
+class TasksController extends Controller {
 
-      $tasks = Task::find()
-      ->where(['status' => Task::STATUS_NEW])
-      ->joinWith(['category', 'city'])
-      ->orderBy(['creation' => SORT_DESC])
-      ->all();
+    public function actionIndex() {
 
-      return $this->render('index', ['tasks' => $tasks]);
-   }
+        $filter = new TaskFilterForm();
+
+        $task = Task::find()
+        ->where(['status' => Task::STATUS_NEW])
+        ->joinWith(['category', 'city', 'responses'])
+        ->orderBy(['creation' => SORT_DESC]);
+
+        $request = Yii::$app->request->getIsPost();
+        $count_categories = Category::find()->count();
+
+        if ($request) {
+
+            $filter->load(Yii::$app->request->post());
+            $selected_categories = count($filter->categories);
+
+            if  ($selected_categories > $count_categories) {
+                $task->andWhere(['in', 'category_id', $filter->categories]);
+            }
+
+            if ($filter->remoteWork > 0) {
+                $task->andWhere(['city_id' => null]);
+            }
+
+            if ($filter->noResponse > 0) {
+                $task->andWhere(['task_id' => null]);
+            }
+        }
+
+        settype($filter->period, 'integer');
+        if ($filter->period > 0) {
+            $expression = new Expression("DATE_SUB(NOW(), INTERVAL {$filter->period} HOUR)");
+            $task->andWhere(['>', 'creation', $expression]);
+        }
+
+        $tasks = $task->all();
+        $responsed = Response::find()->all();
+        $categories = Category::find()->all();
+
+        return $this->render('index', [
+            'tasks' => $tasks,
+            'filter' => $filter,
+            'categories' => $categories,
+            'period_values' => TaskFilterForm::PERIOD_VALUES
+        ]);
+    }
 }
