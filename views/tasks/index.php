@@ -1,5 +1,6 @@
 <?php
     use yii\helpers\Html;
+    use yii\helpers\ArrayHelper;
     use yii\widgets\ActiveForm;
 
     $this->title = 'Задания';
@@ -67,13 +68,13 @@
                     <h4 class="head-card">Категории</h4>
                     <div class="form-group">
                     <?php foreach ($categories as $category): ?>
-                       <?= $form->field($filter, 'categories[]')->checkbox($options = ['value' => $category->id,'checked' => in_array($category->id, $filter->categories)], $enclosedByLabel = false)->label($category->title) ?>
+                       <?= $form->field($filter, 'categories[]')->checkbox($options = ['value' => $category->id,'checked' => ArrayHelper::isIn($category->id, $filter->categories)], $enclosedByLabel = false)->label($category->title) ?>
                        <?php endforeach; ?>
                     </div>
                     <h4 class="head-card">Дополнительно</h4>
                     <div class="form-group">
-                    <?= $form->field($filter, 'remoteWork')->checkbox($options = ['value' => 1], $enclosedByLabel = false)->label('Удаленная работа') ?>
-                    <?= $form->field($filter, 'noResponse')->checkbox($options = ['value' => 1], $enclosedByLabel = false)->label('Без откликов') ?>
+                    <?= $form->field($filter, 'remoteWork')->checkbox($options = ['value' => 1], $enclosedByLabel = false) ?>
+                    <?= $form->field($filter, 'noResponse')->checkbox($options = ['value' => 1], $enclosedByLabel = false) ?>
                     </div>
                     <h4 class="head-card">Период</h4>
                     <div class="form-group">

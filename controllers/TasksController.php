@@ -27,22 +27,21 @@ class TasksController extends Controller {
         ->orderBy(['creation' => SORT_DESC]);
 
         $request = Yii::$app->request->getIsPost();
-        $count_categories = Category::find()->count();
 
         if ($request) {
 
             $filter->load(Yii::$app->request->post());
             $selected_categories = count($filter->categories);
 
-            if  ($selected_categories > $count_categories) {
+            if  ($selected_categories > 0) {
                 $task->andWhere(['in', 'category_id', $filter->categories]);
             }
 
-            if ($filter->remoteWork > 0) {
+            if ($filter->remoteWork) {
                 $task->andWhere(['city_id' => null]);
             }
 
-            if ($filter->noResponse > 0) {
+            if ($filter->noResponse) {
                 $task->andWhere(['task_id' => null]);
             }
         }
@@ -52,6 +51,21 @@ class TasksController extends Controller {
             $expression = new Expression("DATE_SUB(NOW(), INTERVAL {$filter->period} HOUR)");
             $task->andWhere(['>', 'creation', $expression]);
         }
+
+        switch($filter->period) {
+            case TaskFilterForm::PERIOD_HOUR:
+                return $task->andWhere(['=', 'creation', $expression]);
+                break;
+
+            case TaskFilterForm::PERIOD_HALF_DAY:
+                return $task->andWhere(['=', 'creation', $expression]);
+                break;
+
+            case TaskFilterForm::PERIOD_DAY:
+                return $task->andWhere(['=', 'creation', $expression]);
+                break;
+
+          }
 
         $tasks = $task->all();
         $responsed = Response::find()->all();
