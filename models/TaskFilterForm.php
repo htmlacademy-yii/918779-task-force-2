@@ -6,7 +6,7 @@ use Yii;
 use yii\base\Model;
 use app\models\Category;
 
-class TaskFilterForm extends Model {
+class TaskFilterForm extends \yii\db\ActiveRecord {
 
     public const PERIOD_HOUR = 1;
     public const PERIOD_HALF_DAY = 12;
@@ -20,12 +20,13 @@ class TaskFilterForm extends Model {
         self::PERIOD_DAY => '24 часа'
     ];
 
-    public const ACTION_DEFAULT = 'Без откликов';
 
     public $categories = [];
     public $remoteWork;
     public $noResponse;
     public $period;
+
+    public const ACTION_DEFAULT = 'Без откликов';
 
     public function attributeLabels() {
         return [
@@ -36,9 +37,10 @@ class TaskFilterForm extends Model {
 
     public function rules() {
         return [
-            ['categories', 'exist'],
+            [['categories'], 'exist', 'skipOnError' => true, 'targetClass' => '\app\models\Category', 'targetAttribute' => ['categories' => 'id']],
             ['period', 'in', 'range' => [self::PERIOD_HOUR, self::PERIOD_HALF_DAY, self::PERIOD_DAY, self::PERIOD_DEFAULT]],
-            [['categories', 'remoteWork', 'noResponse', 'period'], 'safe'],
+            ['remoteWork', 'boolean', 'trueValue' => true, 'falseValue' => false, 'strict' => true],
+            ['noResponse', 'boolean', 'trueValue' => true, 'falseValue' => false, 'strict' => true],
         ];
     }
 }

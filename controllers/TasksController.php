@@ -33,42 +33,44 @@ class TasksController extends Controller {
             $filter->load(Yii::$app->request->post());
             $selected_categories = count($filter->categories);
 
-            if  ($selected_categories > 0) {
-                $task->andWhere(['in', 'category_id', $filter->categories]);
-            }
+            if ($filter->validate()) {
 
-            if ($filter->remoteWork) {
-                $task->andWhere(['city_id' => null]);
-            }
+                if  ($selected_categories > 0) {
+                    $task->andWhere(['in', 'category_id', $filter->categories]);
+                }
 
-            if ($filter->noResponse) {
-                $task->andWhere(['task_id' => null]);
+                if ($filter->remoteWork) {
+                    $task->andWhere(['city_id' => null]);
+                }
+
+                if ($filter->noResponse) {
+                    $task->andWhere(['task_id' => null]);
+                }
+
             }
         }
 
         settype($filter->period, 'integer');
         if ($filter->period > 0) {
-            $expression = new Expression("DATE_SUB(NOW(), INTERVAL {$filter->period} HOUR)");
-            $task->andWhere(['>', 'creation', $expression]);
+            $task->andWhere(['>', 'creation', 'DATE_SUB(NOW(), INTERVAL {$filter->period} HOUR)']);
         }
 
         switch($filter->period) {
             case TaskFilterForm::PERIOD_HOUR:
-                return $task->andWhere(['=', 'creation', $expression]);
+                return $task->andWhere(['=', 'creation', 'DATE_SUB(NOW(), INTERVAL {$filter->period} HOUR)']);
                 break;
 
             case TaskFilterForm::PERIOD_HALF_DAY:
-                return $task->andWhere(['=', 'creation', $expression]);
+                return $task->andWhere(['=', 'creation', 'DATE_SUB(NOW(), INTERVAL {$filter->period} HOUR)']);
                 break;
 
             case TaskFilterForm::PERIOD_DAY:
-                return $task->andWhere(['=', 'creation', $expression]);
+                return $task->andWhere(['=', 'creation', 'DATE_SUB(NOW(), INTERVAL {$filter->period} HOUR)']);
                 break;
 
           }
 
         $tasks = $task->all();
-        $responsed = Response::find()->all();
         $categories = Category::find()->all();
 
         return $this->render('index', [
