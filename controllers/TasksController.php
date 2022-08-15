@@ -50,26 +50,6 @@ class TasksController extends Controller {
             }
         }
 
-        settype($filter->period, 'integer');
-        if ($filter->period > 0) {
-            $task->andWhere(['>', 'creation', 'DATE_SUB(NOW(), INTERVAL {$filter->period} HOUR)']);
-        }
-
-        switch($filter->period) {
-            case TaskFilterForm::PERIOD_HOUR:
-                return $task->andWhere(['=', 'creation', 'DATE_SUB(NOW(), INTERVAL {$filter->period} HOUR)']);
-                break;
-
-            case TaskFilterForm::PERIOD_HALF_DAY:
-                return $task->andWhere(['=', 'creation', 'DATE_SUB(NOW(), INTERVAL {$filter->period} HOUR)']);
-                break;
-
-            case TaskFilterForm::PERIOD_DAY:
-                return $task->andWhere(['=', 'creation', 'DATE_SUB(NOW(), INTERVAL {$filter->period} HOUR)']);
-                break;
-
-          }
-
         $tasks = $task->all();
         $categories = Category::find()->all();
 

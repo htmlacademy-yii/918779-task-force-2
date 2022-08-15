@@ -26,12 +26,27 @@ class TaskFilterForm extends \yii\db\ActiveRecord {
     public $noResponse;
     public $period;
 
-    public const ACTION_DEFAULT = 'Без откликов';
+    public function getPeriod($period) {
+        settype($period, 'integer');
+
+        switch($period) {
+            case self::PERIOD_HOUR:
+                return $task->andWhere(['=', 'creation', 'DATE_SUB(NOW(), INTERVAL self::PERIOD_HOUR HOUR)']);
+
+            case self::PERIOD_HALF_DAY:
+                return $task->andWhere(['=', 'creation', 'DATE_SUB(NOW(), INTERVAL self::PERIOD_HALF_DAY HOUR)']);
+
+            case self::PERIOD_DAY:
+                return $task->andWhere(['=', 'creation', 'DATE_SUB(NOW(), INTERVAL self::PERIOD_DAY HOUR)']);
+        };
+    }
+
+    public const NO_RESPONSE = 'Без откликов';
 
     public function attributeLabels() {
         return [
             'remoteWork' => 'Удаленная работа',
-            'noResponse' => self::ACTION_DEFAULT,
+            'noResponse' => self::NO_RESPONSE,
         ];
     }
 
