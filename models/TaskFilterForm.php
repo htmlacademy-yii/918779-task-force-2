@@ -4,57 +4,36 @@ namespace app\models;
 
 use Yii;
 use yii\base\Model;
-use app\models\Category;
 use app\models\Task;
-use app\models\City;
-use app\models\Response;
+use app\models\Category;
 use yii\db\ActiveQuery;
-use yii\db\Expression;
 
-class TaskFilterForm extends \yii\db\ActiveRecord {
+class TaskFilterForm extends Model {
 
     public const PERIOD_HOUR = 1;
     public const PERIOD_HALF_DAY = 12;
     public const PERIOD_DAY = 24;
     public const PERIOD_DEFAULT = 0;
 
-    public const PERIOD_VALUES = [
-        self::PERIOD_DEFAULT => 'Без ограничений',
-        self::PERIOD_HOUR => '1 час',
-        self::PERIOD_HALF_DAY  => '12 часов',
-        self::PERIOD_DAY => '24 часа'
+    const PERIOD_VALUES = [
+        '0' => 'Без ограничений',
+        '1' => '1 час',
+        '12'  => '12 часов',
+        '24' => '24 часа'
     ];
+
+    public const NO_RESPONSE = 'Без откликов';
 
     public $categories = [];
     public $remoteWork;
     public $noResponse;
     public $period;
 
-    public const NO_RESPONSE = 'Без откликов';
-
-    public function attributeLabels() {
-        return [
-            'remoteWork' => 'Удаленная работа',
-            'noResponse' => self::NO_RESPONSE,
-        ];
-    }
-
-    public function rules() {
-        return [
-            [['categories'], 'exist', 'skipOnError' => true, 'targetClass' => '\app\models\Category', 'targetAttribute' => ['categories' => 'id']],
-            ['period', 'in', 'range' => [self::PERIOD_HOUR, self::PERIOD_HALF_DAY, self::PERIOD_DAY, self::PERIOD_DEFAULT]],
-            ['remoteWork', 'boolean', 'trueValue' => true, 'falseValue' => false, 'strict' => true],
-            ['noResponse', 'boolean', 'trueValue' => true, 'falseValue' => false, 'strict' => true],
-        ];
-    }
-
-    public function getTasks(): ActiveQuery
-    {
+    public function getTasks(): ActiveQuery {
         $tasks = Task::find()
-        ->where(['status' => Task::STATUS_NEW])
-        ->joinWith(['category', 'city', 'responses'])
-        ->orderBy(['creation' => SORT_DESC]);
-
+            ->where(['status' => Task::STATUS_NEW])
+            ->joinWith(['category', 'city'])
+            ->orderBy(['creation' => SORT_DESC]);
         return $tasks;
     }
 
@@ -76,39 +55,42 @@ class TaskFilterForm extends \yii\db\ActiveRecord {
 
     }
 
-    public static function getCategories(): array
-    {
-
-        $categories = Category::find()->all();
-
-        return $categories;
-    }
-
     public function apply(): array
     {
-
         $tasks = $this->getTasks();
 
-        $selected_categories = count($this->categories);
-
-        if  ($selected_categories > 0) {
-            $tasks->andWhere(['in', 'category_id', $this->categories]);
+        if (isset($this->categories)) {
+            $tasks->andWhere(['category.id' => $this->categories]);
         }
 
-        if ($this->remoteWork) {
-            $tasks->andWhere(['city_id' => null]);
+        if (!isset($this->categories)) {
+            $tasks = $this->getTasks();
         }
 
         if ($this->noResponse) {
-            $tasks->andWhere(['task_id' => null]);
+            $tasks->andWhere(['status' => null]);
         }
 
         if ($this->period) {
             $this->getPeriod($tasks);
         }
 
-        $tasks->orderBy(['creation' => SORT_ASC]);
+        $tasks->orderBy(['creation' => SORT_DESC]);
 
-        return $tasks()->all;
+        return $tasks->all();
+    }
+
+    public function attributeLabels(): array {
+        return [
+            'noResponse' => self::NO_RESPONSE,
+        ];
+    }
+
+    public function rules() {
+        return [
+            [['categories'], 'each', 'rule' => ['exist', 'skipOnError' => true, 'targetClass' => Category::class, 'targetAttribute' => ['categories' => 'id']]],
+            ['period', 'in', 'range' => [self::PERIOD_HOUR, self::PERIOD_HALF_DAY, self::PERIOD_DAY, self::PERIOD_DEFAULT]],
+            ['noResponse', 'boolean'],
+        ];
     }
 }

@@ -7,7 +7,6 @@
 ?>
    <div class="left-column">
       <h3 class="head-main head-task">Новые задания</h3>
-      <?php if (count($tasks) > 0): ?>
          <?php foreach ($tasks as $task): ?>
          <div class="task-card">
             <div class="header-task">
@@ -34,8 +33,6 @@
             </div>
         </div>
         <?php endforeach; ?>
-        <?php endif; ?>
-
         <div class="pagination-wrapper">
             <ul class="pagination-list">
                 <li class="pagination-item mark">
@@ -61,26 +58,36 @@
             <div class="search-form">
             <?php $form = ActiveForm::begin([
                 'id' => 'search-form',
-                'fieldConfig' => [
-                    'template' => "{input}\n{label}"
-                ]
-            ]); ?>
+            ]);
+            ?>
                     <h4 class="head-card">Категории</h4>
                     <div class="form-group">
-                    <?php foreach ($categories as $category): ?>
-                       <?= $form->field($filter, 'categories[]')->checkbox(['value' => $category->id,'checked' => ArrayHelper::isIn($category->id, $filter->categories)], $enclosedByLabel = false)->label($category->title) ?>
-                       <?php endforeach; ?>
+                        <?php echo $form->field($filter, 'categories', ['template' => '{input}'])->checkboxList(
+                            ArrayHelper::map($categories, 'id', 'title'),
+                        [
+                            'class' => 'checkbox-wrapper',
+                            'itemOptions' => [
+                                'labelOptions' => [
+                                    'class' => 'control-label',
+                                ],
+                            ],
+                        ]) ?>
                     </div>
                     <h4 class="head-card">Дополнительно</h4>
                     <div class="form-group">
-                    <?= $form->field($filter, 'remoteWork')->checkbox(['value' => 1], $enclosedByLabel = false) ?>
-                    <?= $form->field($filter, 'noResponse')->checkbox(['value' => 1], $enclosedByLabel = false) ?>
+                        <?php echo $form->field($filter, 'noResponse', [])->checkbox(
+                        [
+                            'labelOptions' => [
+                            'class' => 'control-label',
+                            ]
+                        ]);
+                        ?>
                     </div>
                     <h4 class="head-card">Период</h4>
                     <div class="form-group">
-                    <?= $form->field($filter, 'period', ['template' => "{input}"])->dropDownList($period_values, ['id' => 'period-value']) ?>
+                    <?php echo $form->field($filter, 'period', ['template' => "{input}"])->dropDownList($period_values, ['id' => 'period-value']) ?>
                     </div>
-                    <?= Html::submitButton('Искать', ['class' => 'button button--blue']) ?>
+                    <input type="submit" class="button button--blue" value="Искать">
                     <?php ActiveForm::end() ?>
             </div>
         </div>
