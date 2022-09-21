@@ -6,6 +6,7 @@ use Yii;
 use yii\base\Model;
 use app\models\Task;
 use app\models\Category;
+use app\models\Response;
 use yii\db\ActiveQuery;
 
 class TaskFilterForm extends Model {
@@ -32,12 +33,12 @@ class TaskFilterForm extends Model {
     public function getTasks(): ActiveQuery {
         $tasks = Task::find()
             ->where(['status' => Task::STATUS_NEW])
-            ->joinWith(['category', 'city'])
+            ->joinWith(['category', 'city', 'responses'])
             ->orderBy(['creation' => SORT_DESC]);
         return $tasks;
     }
 
-    private function getPeriod($tasks): ActiveQuery
+    private function applyPeriod($tasks): ActiveQuery
     {
 
         settype($this->period, 'integer');
@@ -59,19 +60,19 @@ class TaskFilterForm extends Model {
     {
         $tasks = $this->getTasks();
 
-        if (isset($this->categories) && $this->categories > 0) {
-            $tasks->andWhere(['category.id' => $this->categories]);
+         $select = count($this->categories);
+
+        if (count($this->categories) > 0) {
+            $tasks->andWhere(['category_id' => $this->categories]);
         }
 
         if ($this->noResponse) {
-            $tasks->andWhere(['status' => null]);
+            $tasks->andWhere(['task_id' => null]);
         }
 
         if ($this->period) {
-            $this->getPeriod($tasks);
+            $tasks->applyPeriod($tasks);
         }
-
-        $tasks->orderBy(['creation' => SORT_DESC]);
 
         return $tasks->all();
     }
@@ -84,6 +85,7 @@ class TaskFilterForm extends Model {
 
     public function rules() {
         return [
+            [['categories'], 'default', 'value' => []],
             [['categories'], 'each', 'rule' => ['exist', 'skipOnError' => true, 'targetClass' => Category::class, 'targetAttribute' => ['categories' => 'id']]],
             ['period', 'in', 'range' => [self::PERIOD_HOUR, self::PERIOD_HALF_DAY, self::PERIOD_DAY, self::PERIOD_DEFAULT]],
             ['noResponse', 'boolean'],
