@@ -59,7 +59,7 @@ class TaskFilterForm extends Model {
     {
         $tasks = $this->getTasks();
 
-        if (isset($this->categories)) {
+        if (isset($this->categories) && $this->categories > 0) {
             $tasks->andWhere(['category.id' => $this->categories]);
         }
 
