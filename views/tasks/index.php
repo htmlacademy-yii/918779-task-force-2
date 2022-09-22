@@ -1,10 +1,12 @@
 <?php
+    use yii\helpers\Html;
+    use yii\helpers\ArrayHelper;
+    use yii\widgets\ActiveForm;
 
-   $this->title = 'Задания';
+    $this->title = 'Задания';
 ?>
    <div class="left-column">
       <h3 class="head-main head-task">Новые задания</h3>
-      <?php if (count($tasks) > 0): ?>
          <?php foreach ($tasks as $task): ?>
          <div class="task-card">
             <div class="header-task">
@@ -31,8 +33,6 @@
             </div>
         </div>
         <?php endforeach; ?>
-        <?php endif; ?>
-
         <div class="pagination-wrapper">
             <ul class="pagination-list">
                 <li class="pagination-item mark">
@@ -54,36 +54,41 @@
         </div>
     </div>
     <div class="right-column">
-       <div class="right-card black">
-           <div class="search-form">
-                <form>
+        <div class="right-card black">
+            <div class="search-form">
+            <?php $form = ActiveForm::begin([
+                'id' => 'search-form',
+            ]);
+            ?>
                     <h4 class="head-card">Категории</h4>
                     <div class="form-group">
-                        <div>
-                            <input type="checkbox" id="сourier-services" checked>
-                            <label class="control-label" for="сourier-services">Курьерские услуги</label>
-                            <input id="cargo-transportation" type="checkbox">
-                            <label class="control-label" for="cargo-transportation">Грузоперевозки</label>
-                            <input id="translations" type="checkbox">
-                            <label class="control-label" for="translations">Переводы</label>
-                        </div>
+                        <?php echo $form->field($filter, 'categories', ['template' => '{input}'])->checkboxList(
+                            ArrayHelper::map($categories, 'id', 'title'),
+                        [
+                            'class' => 'checkbox-wrapper',
+                            'itemOptions' => [
+                                'labelOptions' => [
+                                    'class' => 'control-label',
+                                ],
+                            ],
+                        ]) ?>
                     </div>
                     <h4 class="head-card">Дополнительно</h4>
                     <div class="form-group">
-                        <input id="without-performer" type="checkbox" checked>
-                        <label class="control-label" for="without-performer">Без исполнителя</label>
+                        <?php echo $form->field($filter, 'noResponse', [])->checkbox(
+                        [
+                            'labelOptions' => [
+                            'class' => 'control-label',
+                            ]
+                        ]);
+                        ?>
                     </div>
                     <h4 class="head-card">Период</h4>
                     <div class="form-group">
-                        <label for="period-value"></label>
-                        <select id="period-value">
-                            <option>1 час</option>
-                            <option>12 часов</option>
-                            <option>24 часа</option>
-                        </select>
+                    <?php echo $form->field($filter, 'period', ['template' => "{input}"])->dropDownList($period_values, ['id' => 'period-value']) ?>
                     </div>
-                    <input type="button" class="button button--blue" value="Искать">
-                </form>
-           </div>
-       </div>
+                    <input type="submit" class="button button--blue" value="Искать">
+                    <?php ActiveForm::end() ?>
+            </div>
+        </div>
     </div>

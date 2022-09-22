@@ -3,28 +3,41 @@
 namespace app\controllers;
 
 use Yii;
-use yii\filters\AccessControl;
+
 use yii\web\Controller;
-use yii\web\Response;
-use yii\filters\VerbFilter;
-use app\models\LoginForm;
-use app\models\ContactForm;
 
 use app\models\Task;
 use app\models\Category;
 use app\models\City;
+use app\models\TaskFilterForm;
+use app\models\Response;
+use yii\helpers\ArrayHelper;
 
-class TasksController extends Controller
-{
+use yii\db\Expression;
+use yii\web\NotFoundHttpException;
 
-   public function actionIndex() {
+class TasksController extends Controller {
 
-      $tasks = Task::find()
-      ->where(['status' => Task::STATUS_NEW])
-      ->joinWith(['category', 'city'])
-      ->orderBy(['creation' => SORT_DESC])
-      ->all();
+    public function actionIndex() {
 
-      return $this->render('index', ['tasks' => $tasks]);
-   }
+        $filter = new TaskFilterForm();
+
+        $tasks = $filter->getTasks()->all();
+        $categories = Category::find()->all();
+
+        if (Yii::$app->request->getIsPost()) {
+            $filter->load(Yii::$app->request->post());
+
+            if ($filter->validate()) {
+                $tasks = $filter->apply();
+            }
+        }
+
+        return $this->render('index', [
+            'tasks' => $tasks,
+            'filter' => $filter,
+            'categories' => $categories,
+            'period_values' => TaskFilterForm::PERIOD_VALUES
+        ]);
+    }
 }
