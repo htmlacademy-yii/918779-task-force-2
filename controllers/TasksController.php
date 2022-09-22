@@ -31,10 +31,6 @@ class TasksController extends Controller {
             if ($filter->validate()) {
                 $tasks = $filter->apply();
             }
-
-           else {
-            $errors = $filter->errors;
-           }
         }
 
         return $this->render('index', [

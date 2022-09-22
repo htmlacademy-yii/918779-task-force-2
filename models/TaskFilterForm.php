@@ -60,8 +60,6 @@ class TaskFilterForm extends Model {
     {
         $tasks = $this->getTasks();
 
-         $select = count($this->categories);
-
         if (count($this->categories) > 0) {
             $tasks->andWhere(['category_id' => $this->categories]);
         }
@@ -71,7 +69,7 @@ class TaskFilterForm extends Model {
         }
 
         if ($this->period) {
-            $tasks->applyPeriod($tasks);
+            $tasks = $this->applyPeriod($tasks);
         }
 
         return $tasks->all();
