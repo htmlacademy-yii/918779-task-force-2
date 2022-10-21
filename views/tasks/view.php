@@ -26,7 +26,7 @@ $this->title = 'Просмотр задания';
         <div class="response-card">
             <img class="customer-photo" src="/img/man-glasses.png" width="146" height="156" alt="Фото заказчика">
             <div class="feedback-wrapper">
-                <a href="/user/view/<?= Html::encode($task->id); ?>" class="link link--block link--big">Астахов Павел</a>
+                <a href="/user/view/<?= Html::encode($response->user_id); ?>" class="link link--block link--big">Астахов Павел</a>
                 <div class="response-wrapper">
                     <div class="stars-rating small"><span class="fill-star">&nbsp;</span><span class="fill-star">&nbsp;</span><span class="fill-star">&nbsp;</span><span class="fill-star">&nbsp;</span><span>&nbsp;</span></div>
                     <p class="reviews">2 отзыва</p>

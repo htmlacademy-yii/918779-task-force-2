@@ -7,6 +7,7 @@ use Yii;
 use yii\web\Controller;
 
 use app\models\Task;
+use app\models\User;
 use app\models\Category;
 use app\models\City;
 use app\models\TaskFilterForm;
