@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 $this->title = 'Просмотр задания';
 
@@ -26,7 +27,7 @@ $this->title = 'Просмотр задания';
         <div class="response-card">
             <img class="customer-photo" src="/img/man-glasses.png" width="146" height="156" alt="Фото заказчика">
             <div class="feedback-wrapper">
-                <a href="/user/view/<?= Html::encode($response->user_id); ?>" class="link link--block link--big">Астахов Павел</a>
+                <a href="<?= Url::to(['/user/view', 'id' => $response->user_id]); ?>" class="link link--block link--big">Астахов Павел</a>
                 <div class="response-wrapper">
                     <div class="stars-rating small"><span class="fill-star">&nbsp;</span><span class="fill-star">&nbsp;</span><span class="fill-star">&nbsp;</span><span class="fill-star">&nbsp;</span><span>&nbsp;</span></div>
                     <p class="reviews">2 отзыва</p>
@@ -57,7 +58,7 @@ $this->title = 'Просмотр задания';
             <dd><?= Yii::$app->formatter->asRelativeTime($task->creation); ?></dd>
             <dt>Срок выполнения</dt>
             <!-- <dd>15 октября, 13:00</dd> -->
-            <dd><?= Html::encode($task->runtime); ?></dd>
+            <dd><?= Yii::$app->formatter->asDatetime($task->runtime); ?></dd>
             <dt>Статус</dt>
             <!-- <dd>Открыт для новых заказов</dd> -->
             <dd><?= Html::encode($task->status) ?></dd>

@@ -1,5 +1,6 @@
 <?php
     use yii\helpers\Html;
+    use yii\helpers\Url;
     use yii\helpers\ArrayHelper;
     use yii\widgets\ActiveForm;
 
@@ -10,7 +11,7 @@
          <?php foreach ($tasks as $task): ?>
          <div class="task-card">
             <div class="header-task">
-                <a  href="/tasks/view/<?= Html::encode($task->id) ?>" class="link link--block link--big">
+                <a  href="<?= Url::to(['/tasks/view', 'id' => $task->id]); ?>" class="link link--block link--big">
                 <?= Html::encode($task->title) ?>
                </a>
                <p class="price price--task"><?= Html::encode($task->estimate); ?> ₽</p>
@@ -35,7 +36,7 @@
                     <?php endif; ?>
                 </p>
                 <p class="info-text category-text"><?= Html::encode($task->category->title); ?></p>
-                <a href="/tasks/view/<?= Html::encode($task->id); ?>" class="button button--black">Смотреть Задание</a>
+                <a href="<?= Url::to(['/tasks/view', 'id' => $task->id]); ?>" class="button button--black">Смотреть Задание</a>
             </div>
         </div>
         <?php endforeach; ?>

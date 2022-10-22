@@ -49,8 +49,6 @@ class TasksController extends Controller {
             throw new NotFoundHttpException("Задача с ID $id не найдена");
         }
 
-        $task->runtime = $task->runtime ? Yii::$app->formatter->asDatetime($task->runtime) : 'Срок не определен';
-
         $responses = Response::find()
             ->where(['task_id' => $id])
             ->all();
