@@ -7,6 +7,7 @@ use Yii;
 use yii\web\Controller;
 
 use app\models\Task;
+use app\models\User;
 use app\models\Category;
 use app\models\City;
 use app\models\TaskFilterForm;
@@ -40,4 +41,21 @@ class TasksController extends Controller {
             'period_values' => TaskFilterForm::PERIOD_VALUES
         ]);
     }
+
+    public function actionView ($id) {
+
+        $task = Task::findOne($id);
+        if (!$task) {
+            throw new NotFoundHttpException("Задача с ID $id не найдена");
+        }
+
+        $responses = Response::find()
+            ->where(['task_id' => $id])
+            ->all();
+
+        return $this->render('view', [
+            'task' => $task,
+            'responses' => $responses,
+            ]);
+   }
 }
