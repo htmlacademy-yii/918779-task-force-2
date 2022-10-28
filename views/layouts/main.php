@@ -22,7 +22,7 @@ AppAsset::register($this);
         <a href='#' class="header-logo">
             <img class="logo-image" src="/img/logotype.png" width=227 height=60 alt="taskforce">
         </a>
-        <?php if(Url::current() !== '/registration/index'): ?>
+        <?php if(!Yii::$app->user->isGuest): ?>
         <div class="nav-wrapper">
             <ul class="nav-list">
                 <li class="list-item list-item--active">
@@ -41,7 +41,7 @@ AppAsset::register($this);
         </div>
         <?php endif; ?>
     </nav>
-    <?php if(Url::current() !== '/registration/index'): ?>
+    <?php if(!Yii::$app->user->isGuest): ?>
     <div class="user-block">
         <a href="#">
             <img class="user-photo" src="/img/man-glasses.png" width="55" height="55" alt="Аватар">

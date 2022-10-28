@@ -25,7 +25,8 @@ class RegistrationController extends Controller {
 
             if ($form->validate()) {
                 $form->registration();
-                $this->goHome();
+
+                return $this->goHome();
             }
         }
 
