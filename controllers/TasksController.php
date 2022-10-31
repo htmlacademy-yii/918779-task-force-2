@@ -17,7 +17,7 @@ use yii\helpers\ArrayHelper;
 use yii\db\Expression;
 use yii\web\NotFoundHttpException;
 
-class TasksController extends Controller {
+class TasksController extends AccessController {
 
     public function actionIndex() {
 
