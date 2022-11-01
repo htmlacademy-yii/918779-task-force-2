@@ -3,6 +3,9 @@
 namespace app\models;
 
 use Yii;
+use app\models\City;
+use yii\db\ActiveRecord;
+use yii\web\IdentityInterface;
 
 /**
  * This is the model class for table "user".
@@ -28,7 +31,7 @@ use Yii;
  * @property Specialization[] $specializations
  * @property Task[] $tasks
  */
-class User extends \yii\db\ActiveRecord
+class User extends ActiveRecord implements IdentityInterface
 {
     /**
      * {@inheritdoc}
@@ -36,6 +39,53 @@ class User extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return 'user';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function findIdentity($id)
+    {
+        return self::findOne($id);
+    }
+    /**
+     * {@inheritdoc}
+     */
+    public static function findIdentityByAccessToken($token, $type = null)
+    {
+        // TODO: Implement findIdentityByAccessToken() method.
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getId()
+    {
+        return $this->getPrimaryKey();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getAuthKey()
+    {
+        // TODO: Implement getAuthKey() method.
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function validateAuthKey($authKey)
+    {
+        // TODO: Implement validateAuthKey() method.
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function validatePassword($password)
+    {
+        return Yii::$app->security->validatePassword($password, $this->password);
     }
 
     /**
@@ -67,17 +117,18 @@ class User extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'registration' => 'Registration',
-            'name' => 'Name',
+            'name' => 'Ваше имя',
             'birthday' => 'Birthday',
             'avatar' => 'Avatar',
-            'phone' => 'Phone',
+            'phone' => 'Телефон',
             'email' => 'Email',
             'telegram' => 'Telegram',
             'info' => 'Info',
-            'city_id' => 'City ID',
+            'city_id' => 'Город',
             'role' => 'Role',
             'token' => 'Token',
-            'password' => 'Password',
+            'password' => 'Пароль',
+            'repeat_password' => 'Повтор пароля',
         ];
     }
 
