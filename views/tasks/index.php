@@ -6,6 +6,7 @@
 
     $this->title = 'Задания';
 ?>
+<main class="main-content container">
    <div class="left-column">
       <h3 class="head-main head-task">Новые задания</h3>
          <?php foreach ($tasks as $task): ?>
@@ -99,3 +100,4 @@
             </div>
         </div>
     </div>
+</main>

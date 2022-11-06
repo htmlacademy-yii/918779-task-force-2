@@ -26,16 +26,16 @@ AppAsset::register($this);
         <div class="nav-wrapper">
             <ul class="nav-list">
                 <li class="list-item list-item--active">
-                    <a class="link link--nav">Новое</a>
+                    <a class="link link--nav" href="<?= Url::to(['tasks/index']) ?>">Новое</a>
                 </li>
                 <li class="list-item">
                     <a href="#" class="link link--nav">Мои задания</a>
                 </li>
                 <li class="list-item">
-                    <a href="#" class="link link--nav">Создать задание</a>
+                    <a href="<?= Url::to(['tasks/add']) ?>" class="link link--nav">Создать задание</a>
                 </li>
                 <li class="list-item">
-                    <a href="#" class="link link--nav">Настройки</a>
+                    <a href="<?= Url::to(['settings']) ?>" class="link link--nav">Настройки</a>
                 </li>
             </ul>
         </div>
@@ -47,7 +47,11 @@ AppAsset::register($this);
             <img class="user-photo" src="/img/man-glasses.png" width="55" height="55" alt="Аватар">
         </a>
         <div class="user-menu">
-            <p class="user-name">Василий</p>
+            <p class="user-name">
+            <?php if (isset(Yii::$app->user->identity->name)): ?>
+                <?= Html::encode(Yii::$app->user->identity->name); ?>
+            <?php endif; ?>
+            </p>
             <div class="popup-head">
                 <ul class="popup-menu">
                     <li class="menu-item">
@@ -57,7 +61,7 @@ AppAsset::register($this);
                         <a href="#" class="link">Связаться с нами</a>
                     </li>
                     <li class="menu-item">
-                        <a href="#" class="link">Выход из системы</a>
+                        <a href="<?= Url::to(['user/logout']) ?>" class="link">Выход из системы</a>
                     </li>
 
                 </ul>
@@ -66,9 +70,7 @@ AppAsset::register($this);
     </div>
     <?php endif; ?>
 </header>
-<main class="main-content container">
-    <?= $content ?>
-</main>
+<?= $content ?>
 <?php $this->endBody() ?>
 </body>
 </html>

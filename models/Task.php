@@ -52,9 +52,9 @@ class Task extends \yii\db\ActiveRecord
             [['estimate', 'city_id', 'user_id', 'category_id'], 'integer'],
             [['lat', 'lng'], 'number'],
             [['title'], 'string', 'max' => 255],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
+            // [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::className(), 'targetAttribute' => ['category_id' => 'id']],
-            [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => City::className(), 'targetAttribute' => ['city_id' => 'id']],
+            // [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => City::className(), 'targetAttribute' => ['city_id' => 'id']],
         ];
     }
 
@@ -66,11 +66,11 @@ class Task extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'creation' => 'Creation',
-            'title' => 'Title',
-            'description' => 'Description',
-            'estimate' => 'Estimate',
-            'runtime' => 'Runtime',
-            'city_id' => 'City ID',
+            'title' => 'Название',
+            'description' => 'Подробности задания',
+            'estimate' => 'Бюджет',
+            'runtime' => 'Срок исполнения',
+            'city_id' => 'Город',
             'lat' => 'Lat',
             'lng' => 'Lng',
             'user_id' => 'User ID',

@@ -3,16 +3,14 @@
 namespace app\controllers;
 
 use Yii;
-use yii\web\Controller;
-use app\models\Task;
-use app\models\User;
-use app\models\Category;
-use app\models\City;
+use app\models\AddTaskForm;
 use app\models\TaskFilterForm;
+use app\models\Task;
+use app\models\Category;
 use app\models\Response;
 use yii\helpers\ArrayHelper;
-use yii\db\Expression;
 use yii\web\NotFoundHttpException;
+use yii\web\UploadedFile;
 
 class TasksController extends AccessController {
 
@@ -55,4 +53,24 @@ class TasksController extends AccessController {
             'responses' => $responses,
             ]);
    }
+
+    public function actionAdd() {
+
+        $form = new AddTaskForm();
+
+        $categories = ArrayHelper::map(Category::find()->all(), 'id', 'title');
+
+        if (Yii::$app->request->getIsPost()) {
+        $form->load(Yii::$app->request->post());
+
+            if ($form->validate()) {
+                $form->addTask();
+            }
+        }
+
+        return $this->render('add', [
+            'model' => $form,
+            'categories' => $categories,
+        ]);
+    }
 }
