@@ -10,6 +10,8 @@ use app\models\Category;
 use app\models\Response;
 use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
+use taskforce\exceptions\NotAddTaskException;
+use taskforce\exceptions\NotUploadFileException;
 use yii\web\UploadedFile;
 
 class TasksController extends AccessController {
