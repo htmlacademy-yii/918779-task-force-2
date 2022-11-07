@@ -65,6 +65,16 @@ class TasksController extends AccessController {
 
             if ($form->validate()) {
                 $form->addTask();
+
+                if (!$form->addTask()->save()) {
+                    throw new NotAddTaskException('Не удалось загрузить обьявление');
+                }
+
+                $form->uploadAttachment();
+
+                if (!$form->uploadAttachment()->save()) {
+                    throw new NotUploadFileException('Не удалось загрузить вложение');
+                }
             }
         }
 

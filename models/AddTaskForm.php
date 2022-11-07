@@ -81,18 +81,22 @@ class AddTaskForm extends Model {
         $task->runtime = $this->runtime;
         $task->status = Task::STATUS_NEW;
 
-        if (!$task->save()) {
-            throw new NotFoundHttpException('Не удалось загрузить обьявление');
-        }
+        return $task;
+
+    }
+
+    public function uploadAttachment()
+    {
 
         $this->attachment_title = $this->uploadFile(UploadedFile::getInstances($this, 'attachment'));
 
-        if (count($this->attachment_title) > 0 && $task->id) {
+        if (count($this->attachment_title) > 0 && $addTask()->id) {
             foreach ($this->attachment_title as $name) {
                 $file = new Attachment();
-                $file->task_id = $task->id;
+                $file->task_id = $addTask()->id;
                 $file->attachment_title = $name;
-                $file->save();
+
+                return $file;
             }
         }
     }
