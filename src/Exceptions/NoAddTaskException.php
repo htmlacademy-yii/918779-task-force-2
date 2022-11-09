@@ -2,6 +2,6 @@
 
 namespace Taskforce\Exceptions;
 
-class NotAddTaskException extends \Exception {
+class NoAddTaskException extends \Exception {
 
 }

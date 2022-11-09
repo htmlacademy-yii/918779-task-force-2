@@ -2,14 +2,13 @@
 
 namespace app\models;
 
+use yii;
 use yii\base\Model;
 use app\models\User;
 use app\models\Category;
 use app\models\Task;
 use app\models\Attachment;
-use yii;
 use yii\web\UploadedFile;
-use yii\web\NotFoundHttpException;
 
 class AddTaskForm extends Model {
 
@@ -33,9 +32,9 @@ class AddTaskForm extends Model {
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::className(), 'targetAttribute' => ['category_id' => 'id']],
             [['description'], 'string'],
             [['title'], 'string', 'max' => 255],
+            ['runtime', 'date', 'format' => 'php:Y-m-d'],
+            ['runtime', 'compare', 'compareValue' => date('Y-m-d'), 'operator' => '>', 'type' => 'date'],
             [['estimate', 'category_id'], 'integer'],
-            [['runtime'], 'date', 'format' => 'Y-m-d'],
-            [['runtime'], 'compare', 'compareValue' => date('Y-m-d'), 'operator' => '>', 'type' => 'date'],
             [['attachment'], 'file', 'skipOnEmpty' => true, 'extensions' => null, 'maxFiles' => 4],
         ];
     }
@@ -77,6 +76,7 @@ class AddTaskForm extends Model {
         $task->user_id = Yii::$app->user->getId();
         $task->title = $this->title;
         $task->description = $this->description;
+        $task->category_id = $this->category_id;
         $task->estimate = $this->estimate;
         $task->runtime = $this->runtime;
         $task->status = Task::STATUS_NEW;

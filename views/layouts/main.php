@@ -3,6 +3,7 @@
 use app\assets\AppAsset;
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\widgets\Menu;
 
 AppAsset::register($this);
 ?>
@@ -24,20 +25,19 @@ AppAsset::register($this);
         </a>
         <?php if(!Yii::$app->user->isGuest): ?>
         <div class="nav-wrapper">
-            <ul class="nav-list">
-                <li class="list-item list-item--active">
-                    <a class="link link--nav" href="<?= Url::to(['tasks/index']) ?>">Новое</a>
-                </li>
-                <li class="list-item">
-                    <a href="#" class="link link--nav">Мои задания</a>
-                </li>
-                <li class="list-item">
-                    <a href="<?= Url::to(['tasks/add']) ?>" class="link link--nav">Создать задание</a>
-                </li>
-                <li class="list-item">
-                    <a href="<?= Url::to(['settings']) ?>" class="link link--nav">Настройки</a>
-                </li>
-            </ul>
+        <?php echo Menu::widget([
+            'items' => [
+                ['label' => 'Новое', 'url' => ['tasks/index']],
+                ['label' => 'Мои задания', 'url' => ['tasks/my']],
+                ['label' => 'Создать задание', 'url' => ['tasks/add'], 'visible' => Yii::$app->user->identity->role === 'customer'],
+                ['label' => 'Настройки', 'url' => ['settings']],
+            ],
+            'options' => ['class' => 'nav-list'],
+            'itemOptions' => ['class' => 'list-item'],
+            'activeCssClass' => 'list-item--active',
+            'linkTemplate' => '<a class="link link--nav" href="{url}">{label}</a>',
+        ]);
+        ?>
         </div>
         <?php endif; ?>
     </nav>

@@ -2,19 +2,40 @@
 
 namespace app\controllers;
 
-use Yii;
+use yii;
+use yii\web\Controller;
+
 use app\models\AddTaskForm;
 use app\models\TaskFilterForm;
 use app\models\Task;
 use app\models\Category;
 use app\models\Response;
+
+use yii\bootstrap4\ActiveForm;
 use yii\helpers\ArrayHelper;
+
 use yii\web\NotFoundHttpException;
-use taskforce\exceptions\NotAddTaskException;
-use taskforce\exceptions\NotUploadFileException;
-use yii\web\UploadedFile;
+use Taskforce\Exceptions\NoAddTaskException;
+use Taskforce\Exceptions\NoUploadFileException;
+
 
 class TasksController extends AccessController {
+
+    public function behaviors()
+    {
+        $rules = parent::behaviors();
+        $rule = [
+            'allow' => false,
+            'actions' => ['add'],
+            'matchCallback' => function ($rule, $action) {
+                return Yii::$app->user->identity->role !== 'customer';
+            }
+        ];
+
+        array_unshift($rules['access']['rules'], $rule);
+
+        return $rules;
+    }
 
     public function actionIndex() {
 
@@ -64,19 +85,14 @@ class TasksController extends AccessController {
 
         if (Yii::$app->request->getIsPost()) {
         $form->load(Yii::$app->request->post());
-
             if ($form->validate()) {
-                $form->addTask();
-
                 if (!$form->addTask()->save()) {
-                    throw new NotAddTaskException('Не удалось загрузить обьявление');
+                    throw new NoAddTaskException('Не удалось добавить задание');
                 }
-
-                $form->uploadAttachment();
-
                 if (!$form->uploadAttachment()->save()) {
-                    throw new NotUploadFileException('Не удалось загрузить вложение');
+                    throw new NoUploadFileException('Не удалось загрузить вложение');
                 }
+                return $this->redirect('/tasks/view/' . $form->addTask()->id);
             }
         }
 
