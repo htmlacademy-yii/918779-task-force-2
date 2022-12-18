@@ -37,7 +37,7 @@ $this->title = 'Создание задания';
             </div>
             <p class="form-label">Файлы</p>
             <?php
-              echo $form->field($model, 'attachment[]', ['template' => "{label}{input}", 'options' => ['class' => 'new-file']])->fileInput(['multiple' => 'multiple', 'style' => 'opacity:0; position: absolute;']);
+              echo $form->field($model, 'imageFiles[]', ['template' => "{label}{input}", 'options' => ['class' => 'new-file']])->fileInput(['multiple' => 'multiple', 'style' => 'opacity:0; position: absolute;']);
             ?>
 
             <?= Html::submitInput('Опубликовать', ['class' => 'button button--blue']); ?>

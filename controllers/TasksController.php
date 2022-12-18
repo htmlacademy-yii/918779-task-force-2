@@ -18,6 +18,7 @@ use yii\web\NotFoundHttpException;
 use Taskforce\Exceptions\NoAddTaskException;
 use Taskforce\Exceptions\NoUploadFileException;
 
+use yii\web\UploadedFile;
 
 class TasksController extends AccessController {
 
@@ -85,14 +86,28 @@ class TasksController extends AccessController {
 
         if (Yii::$app->request->getIsPost()) {
         $form->load(Yii::$app->request->post());
+
+        $form->imageFiles = UploadedFile::getInstances($form, 'imageFiles');
+
             if ($form->validate()) {
-                if (!$form->addTask()->save()) {
+
+                $newTask = $form->addTask();
+                $newTask->save();
+
+                if (!$newTask->save()) {
                     throw new NoAddTaskException('Не удалось добавить задание');
                 }
-                if (!$form->uploadAttachment()->save()) {
+
+                $newAttach = $form->upload();
+                $newAttach->task_id = $newTask->id;
+                $newAttach->save();
+
+                if (!$newAttach->save()) {
                     throw new NoUploadFileException('Не удалось загрузить вложение');
                 }
-                return $this->redirect('/tasks/view/' . $form->addTask()->id);
+
+                return $this->redirect('/tasks/view/' . $newTask->id);
+
             }
         }
 

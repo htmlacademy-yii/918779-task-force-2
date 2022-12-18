@@ -2,6 +2,6 @@
 
 namespace Taskforce\Exceptions;
 
-class NotUploadFileException extends \Exception {
+class NoUploadFileException extends \Exception {
 
 }

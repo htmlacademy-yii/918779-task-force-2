@@ -8,7 +8,6 @@ use app\models\User;
 use app\models\Category;
 use app\models\Task;
 use app\models\Attachment;
-use yii\web\UploadedFile;
 
 class AddTaskForm extends Model {
 
@@ -18,9 +17,11 @@ class AddTaskForm extends Model {
     public $location;
     public $estimate;
     public $runtime;
-    public $attachment;
 
-    public $attachment_title;
+        /**
+     * @var UploadedFile
+     */
+    public $imageFiles;
 
     /**
      * {@inheritdoc}
@@ -35,7 +36,7 @@ class AddTaskForm extends Model {
             ['runtime', 'date', 'format' => 'php:Y-m-d'],
             ['runtime', 'compare', 'compareValue' => date('Y-m-d'), 'operator' => '>', 'type' => 'date'],
             [['estimate', 'category_id'], 'integer'],
-            [['attachment'], 'file', 'skipOnEmpty' => true, 'extensions' => null, 'maxFiles' => 4],
+            [['imageFiles'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg', 'maxFiles' => 4],
         ];
     }
 
@@ -51,22 +52,8 @@ class AddTaskForm extends Model {
             'estimate' => 'Бюджет',
             'location' => 'Локация',
             'runtime' => 'Срок исполнения',
-            'attachment' => 'Добавить новый файл',
+            'imageFiles' => 'Добавить новый файл',
         ];
-    }
-
-    private function uploadFile($attachment)
-    {
-        $savedFiles = [];
-        if (is_array($attachment) && count($attachment) && $this->validate()) {
-            foreach ($attachment as $file) {
-                $name = uniqid('upload') . '.' . $file->getExtension();
-                if ($file->saveAs('@webroot/uploads/' . $name)) {
-                    $savedFiles[] = $name;
-                }
-            }
-        }
-        return $savedFiles;
     }
 
     public function addTask()
@@ -80,24 +67,23 @@ class AddTaskForm extends Model {
         $task->estimate = $this->estimate;
         $task->runtime = $this->runtime;
         $task->status = Task::STATUS_NEW;
+        $task->city_id = 1;
 
         return $task;
-
     }
 
-    public function uploadAttachment()
+    public function upload()
     {
+        $attach = new Attachment();
 
-        $this->attachment_title = $this->uploadFile(UploadedFile::getInstances($this, 'attachment'));
-
-        if (count($this->attachment_title) > 0 && $addTask()->id) {
-            foreach ($this->attachment_title as $name) {
-                $file = new Attachment();
-                $file->task_id = $addTask()->id;
-                $file->attachment_title = $name;
-
-                return $file;
+        if ($this->imageFiles && $this->validate()) {
+            foreach ($this->imageFiles as $file) {
+                $newname = uniqid('upload') . '.' . $file->getExtension();
+                $file->saveAs('@webroot/uploads/' . $newname);
             }
+            $attach->path = $newname;
+            $attach->title = $file->baseName;
         }
+        return $attach;
     }
 }
