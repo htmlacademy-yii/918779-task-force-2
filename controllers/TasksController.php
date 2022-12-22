@@ -19,6 +19,7 @@ use Taskforce\Exceptions\NoAddTaskException;
 use Taskforce\Exceptions\NoUploadFileException;
 
 use yii\web\UploadedFile;
+use yii\helpers\Url;
 
 class TasksController extends AccessController {
 
@@ -92,21 +93,37 @@ class TasksController extends AccessController {
             if ($form->validate()) {
 
                 $newTask = $form->addTask();
-                $newTask->save();
 
-                if (!$newTask->save()) {
-                    throw new NoAddTaskException('Не удалось добавить задание');
+                $transaction = \Yii::$app->db->beginTransaction();
+                try {
+
+                    $newTask->save();
+
+                    if (!$newTask->save()){
+                        throw new NoAddTaskException("Не удалось добавить задание");
+                    }
+
+                    $newAttaches = $form->uploads();
+                    var_dump ($newAttaches);
+                    $newAttaches->task_id = $newTask->id;
+                    $newAttaches->save();
+
+                    if (!$newAttaches->save()) {
+                        throw new NoUploadFileException('Не удалось загрузить вложения');
+                    }
+
+                    $transaction->commit();
+                } catch (\Exception $e) {
+                    $transaction->rollBack();
+                    throw $e;
+                } catch (\Throwable $e) {
+                    $transaction->rollBack();
+                    throw $e;
                 }
 
-                $newAttach = $form->upload();
-                $newAttach->task_id = $newTask->id;
-                $newAttach->save();
 
-                if (!$newAttach->save()) {
-                    throw new NoUploadFileException('Не удалось загрузить вложение');
-                }
 
-                return $this->redirect('/tasks/view/' . $newTask->id);
+                return $this->redirect(['tasks/view', 'id' => $newTask->id]);
 
             }
         }

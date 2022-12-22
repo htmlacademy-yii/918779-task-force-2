@@ -72,7 +72,7 @@ class AddTaskForm extends Model {
         return $task;
     }
 
-    public function upload()
+    public function uploads()
     {
         $attach = new Attachment();
 
@@ -80,10 +80,11 @@ class AddTaskForm extends Model {
             foreach ($this->imageFiles as $file) {
                 $newname = uniqid('upload') . '.' . $file->getExtension();
                 $file->saveAs('@webroot/uploads/' . $newname);
+                $attach->path .= $newname;
+                $attach->title = $file->baseName;
             }
-            $attach->path = $newname;
-            $attach->title = $file->baseName;
         }
+
         return $attach;
     }
 }
