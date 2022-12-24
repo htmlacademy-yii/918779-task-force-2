@@ -69,22 +69,45 @@ class AddTaskForm extends Model {
         $task->status = Task::STATUS_NEW;
         $task->city_id = 1;
 
+        $transaction = \Yii::$app->db->beginTransaction();
+        try {
+            if (!$task->save()){
+                throw new NoAddTaskException("Не удалось добавить задание");
+            }
+
+            $this->uploads($task);
+            $transaction->commit();
+
+        } catch (\Exception $e) {
+            $transaction->rollBack();
+            throw $e;
+
+        } catch (\Throwable $e) {
+            $transaction->rollBack();
+            throw $e;
+        }
+
         return $task;
     }
 
-    public function uploads()
+    public function uploads($newTask)
     {
-        $attach = new Attachment();
+        $this->imageFiles = UploadedFile::getInstances($this, 'imageFiles');
 
         if ($this->imageFiles && $this->validate()) {
             foreach ($this->imageFiles as $file) {
+                $attach = new Attachment();
                 $newname = uniqid('upload') . '.' . $file->getExtension();
                 $file->saveAs('@webroot/uploads/' . $newname);
-                $attach->path .= $newname;
+                $attach->task_id = $newTask->id;
+                $attach->path = $newname;
                 $attach->title = $file->baseName;
+                if (!$attach->save()) {
+                    throw new NoUploadFileException('Не удалось загрузить вложения');
+                }
             }
         }
 
-        return $attach;
+
     }
 }

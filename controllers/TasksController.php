@@ -81,50 +81,18 @@ class TasksController extends AccessController {
 
     public function actionAdd() {
 
-        $form = new AddTaskForm();
-
         $categories = ArrayHelper::map(Category::find()->all(), 'id', 'title');
 
-        if (Yii::$app->request->getIsPost()) {
-        $form->load(Yii::$app->request->post());
+        $form = new AddTaskForm();
 
-        $form->imageFiles = UploadedFile::getInstances($form, 'imageFiles');
+        if (Yii::$app->request->getIsPost()) {
+            $form->load(Yii::$app->request->post());
+
 
             if ($form->validate()) {
 
                 $newTask = $form->addTask();
-
-                $transaction = \Yii::$app->db->beginTransaction();
-                try {
-
-                    $newTask->save();
-
-                    if (!$newTask->save()){
-                        throw new NoAddTaskException("Не удалось добавить задание");
-                    }
-
-                    $newAttaches = $form->uploads();
-                    var_dump ($newAttaches);
-                    $newAttaches->task_id = $newTask->id;
-                    $newAttaches->save();
-
-                    if (!$newAttaches->save()) {
-                        throw new NoUploadFileException('Не удалось загрузить вложения');
-                    }
-
-                    $transaction->commit();
-                } catch (\Exception $e) {
-                    $transaction->rollBack();
-                    throw $e;
-                } catch (\Throwable $e) {
-                    $transaction->rollBack();
-                    throw $e;
-                }
-
-
-
                 return $this->redirect(['tasks/view', 'id' => $newTask->id]);
-
             }
         }
 
