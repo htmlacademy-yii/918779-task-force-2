@@ -23,7 +23,6 @@ use yii\web\IdentityInterface;
  * @property string|null $role
  * @property string|null $token
  * @property string $password
- *
  * @property Category[] $categories
  * @property City $city
  * @property Response[] $responses
@@ -33,6 +32,9 @@ use yii\web\IdentityInterface;
  */
 class User extends ActiveRecord implements IdentityInterface
 {
+
+
+
     /**
      * {@inheritdoc}
      */
