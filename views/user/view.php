@@ -68,7 +68,7 @@ $this->title = 'Профиль пользователя';
                     <dt>Место в рейтинге</dt>
                     <dd>25 место</dd>
                     <dt>Дата регистрации</dt>
-                    <dd>15 октября, 13:00</dd>
+                    <dd><?= Yii::$app->formatter->asDatetime($user->registration); ?></dd>
                     <dt>Статус</dt>
                     <dd>Открыт для новых заказов</dd>
             </dl>
@@ -77,13 +77,13 @@ $this->title = 'Профиль пользователя';
             <h4 class="head-card">Контакты</h4>
             <ul class="enumeration-list">
                 <li class="enumeration-item">
-                    <a href="#" class="link link--block link--phone">+7 (906) 256-06-08</a>
+                    <a href="#" class="link link--block link--phone"><?= Html::encode($user->phone); ?></a>
                 </li>
                 <li class="enumeration-item">
-                    <a href="#" class="link link--block link--email">super-pavel@mail.ru</a>
+                    <a href="#" class="link link--block link--email"><?= Html::encode($user->email); ?></a>
                 </li>
                 <li class="enumeration-item">
-                    <a href="#" class="link link--block link--tg">@superpasha</a>
+                    <a href="#" class="link link--block link--tg"><?= Html::encode($user->telegram); ?></a>
                 </li>
             </ul>
         </div>

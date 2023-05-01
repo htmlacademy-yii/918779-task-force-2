@@ -2,6 +2,14 @@
 
 namespace app\models;
 
+use \Taskforce\Exceptions\NoAvailableActionsException;
+
+use \Taskforce\Actions\CancelAction;
+use \Taskforce\Actions\RespondAction;
+use \Taskforce\Actions\DoneAction;
+use \Taskforce\Actions\RefusedAction;
+use \Taskforce\Helpers\AvailableButton;
+
 use Yii;
 
 /**
@@ -75,7 +83,7 @@ class Task extends \yii\db\ActiveRecord
             'lng' => 'Lng',
             'user_id' => 'User ID',
             'category_id' => 'Category ID',
-            'status' => 'Status',
+            'status' => 'Статус',
         ];
     }
 

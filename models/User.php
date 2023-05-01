@@ -4,6 +4,7 @@ namespace app\models;
 
 use Yii;
 use app\models\City;
+use Taskforce\Tasks;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 
@@ -102,6 +103,7 @@ class User extends ActiveRecord implements IdentityInterface
             [['city_id'], 'integer'],
             [['name', 'email'], 'string', 'max' => 128],
             [['avatar', 'password'], 'string', 'max' => 255],
+            ['avatar', 'default', 'value' => 'img/avatars/1.png' ],
             [['phone'], 'string', 'max' => 12],
             [['telegram'], 'string', 'max' => 64],
             [['email'], 'unique'],
@@ -192,5 +194,20 @@ class User extends ActiveRecord implements IdentityInterface
     public function getTasks()
     {
         return $this->hasMany(Task::className(), ['user_id' => 'id']);
+    }
+
+    /**
+     * Gets user statistics update.
+     *
+     *
+     */
+
+    public function updateStats()
+    {
+        $total = Review::find()->where(['user_id' => $this->id])->sum('stats');
+        $countCompletedTasks = Review::find()->where('stats > 0')->andFilterWhere(['user_id' => $this->id])->count('stats');
+        $countFailedTasks = Task::find()->where(['user_id' => $this->id, 'status' => Tasks::STATUS_FAILED])->count('id');
+        $totalStats = $total / ($countCompletedTasks + $countFailedTasks);
+        $this->save();
     }
 }

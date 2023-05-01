@@ -1,7 +1,7 @@
 <?php
 
 use app\assets\LandingAsset;
-use yii\bootstrap4\Html;
+use yii\bootstrap5\Html;
 use yii\helpers\Url;
 
 LandingAsset::register($this);

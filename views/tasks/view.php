@@ -2,6 +2,10 @@
 
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\widgets\ActiveForm;
+use app\widgets\ActionWidget;
+use yii\widgets\ListView;
+use kartik\rating\StarRating;
 
 $this->title = 'Просмотр задания';
 
@@ -14,41 +18,29 @@ $this->title = 'Просмотр задания';
             <p class="price price--big"><?= Html::encode($task->estimate) ?> ₽</p>
         </div>
         <p class="task-description">
-        <?= Html::encode($task->description) ?>
+            <?= Html::encode($task->description) ?>
         </p>
-        <a href="#" class="button button--blue">Откликнуться на задание</a>
+        <?php if(!empty($action))
+            {
+            echo ActionWidget::widget(['action' => $action]);
+            }
+        ?>
         <div class="task-map">
             <img class="map" src="/img/map.png"  width="725" height="346" alt="">
             <p class="map-address town">Москва</p>
             <p class="map-address">Новый арбат, 23, к. 1</p>
         </div>
-        <?php if($responses): ?>
-        <h4 class="head-regular">Отклики на задание</h4>
-            <?php foreach($responses as $response): ?>
-            <div class="response-card">
-                <img class="customer-photo" src="/img/man-glasses.png" width="146" height="156" alt="Фото заказчика">
-                <div class="feedback-wrapper">
-                    <a href="<?= Url::to(['/user/view', 'id' => $response->user_id]); ?>" class="link link--block link--big">Астахов Павел</a>
-                    <div class="response-wrapper">
-                        <div class="stars-rating small"><span class="fill-star">&nbsp;</span><span class="fill-star">&nbsp;</span><span class="fill-star">&nbsp;</span><span class="fill-star">&nbsp;</span><span>&nbsp;</span></div>
-                        <p class="reviews">2 отзыва</p>
-                    </div>
-                    <p class="response-message">
-                        <?= Html::encode($response->comment); ?>
-                    </p>
-                </div>
-                <div class="feedback-wrapper">
-                    <p class="info-text"><span class="current-time"><?= Yii::$app->formatter->asRelativeTime($task->creation); ?></p>
-                    <p class="price price--small"><?= Html::encode($response->price); ?> ₽</p>
-                </div>
-                <div class="button-popup">
-                    <a href="#" class="button button--blue button--small">Принять</a>
-                    <a href="#" class="button button--orange button--small">Отказать</a>
-                </div>
-            </div>
-            <?php endforeach; ?>
-        <?php endif; ?>
+
+        <?php
+            echo ListView::widget([
+                'dataProvider' => $responses,
+                'itemView' => 'responsesList',
+                'layout' =>  '<h4 class="head-regular">Отклики на задание</h4>{items}',
+                'emptyText' => false,
+            ]);
+        ?>
     </div>
+
     <div class="right-column">
         <div class="right-card black info-card">
             <h4 class="head-card">Информация о задании</h4>
@@ -59,24 +51,108 @@ $this->title = 'Просмотр задания';
                 <dd><?= Yii::$app->formatter->asRelativeTime($task->creation); ?></dd>
                 <dt>Срок выполнения</dt>
                 <!-- <dd>15 октября, 13:00</dd> -->
-                <dd><?= Yii::$app->formatter->asDatetime($task->runtime); ?></dd>
+                <dd><?= Yii::$app->formatter->asDateTime($task->runtime); ?></dd>
                 <dt>Статус</dt>
-                <!-- <dd>Открыт для новых заказов</dd> -->
-                <dd><?= Html::encode($task->status) ?></dd>
+                <!-- <dd>Новое</dd> -->
+                <dd><?= Html::encode($status) ?></dd>
             </dl>
         </div>
         <div class="right-card white file-card">
             <h4 class="head-card">Файлы задания</h4>
             <ul class="enumeration-list">
+                <?php foreach($attachments as $attachment): ?>
                 <li class="enumeration-item">
-                    <a href="#" class="link link--block link--clip">my_picture.jpg</a>
-                    <p class="file-size">356 Кб</p>
+                    <a href="<?= Url::to(['/uploads', 'id' => $attachment->path]); ?>" class="link link--block link--clip"><?= Html::encode($attachment->title) ?></a>
+                    <p class="file-size"><?= Yii::$app->formatter->asShortSize($attachment->size); ?></p>
                 </li>
-                <li class="enumeration-item">
-                    <a href="#" class="link link--block link--clip">information.docx</a>
-                    <p class="file-size">12 Кб</p>
-                </li>
+                <?php endforeach; ?>
             </ul>
         </div>
     </div>
 </main>
+
+<section class="pop-up pop-up--refusal pop-up--close">
+    <div class="pop-up--wrapper">
+    <?php $form = ActiveForm::begin([
+                    'id' => 'pop-up--refusal',
+                ]);
+                ?>
+        <h4>Отказ от задания</h4>
+        <p class="pop-up-text">
+            <b>Внимание!</b><br>
+            Вы собираетесь отказаться от выполнения этого задания.<br>
+            Это действие плохо скажется на вашем рейтинге и увеличит счетчик проваленных заданий.
+        </p>
+        <a href="<?= Url::to(['tasks/reject', 'id' => $task->id]); ?>" class="button button--pop-up button--orange">Отказаться</a>
+        <div class="button-container">
+            <button class="button--close" type="button">Закрыть окно</button>
+        </div>
+    <?php ActiveForm::end(); ?>
+    </div>
+</section>
+
+<section class="pop-up pop-up--completion pop-up--close">
+    <div class="pop-up--wrapper">
+    <?php $form = ActiveForm::begin([
+                    'id' => 'pop-up--completion',
+                ]);
+                ?>
+        <h4>Завершение задания</h4>
+        <p class="pop-up-text">
+            Вы собираетесь отметить это задание как выполненное.
+            Пожалуйста, оставьте отзыв об исполнителе и отметьте отдельно, если возникли проблемы.
+        </p>
+        <div class="completion-form pop-up--form regular-form">
+            <form>
+            <?php echo $form->field($newReview, 'comment', ['template' => "{label}\n{input}\n{error}", 'options' => ['class' => 'form-group'], 'labelOptions' => ['class' => 'control-label']])
+            ->textArea(); ?>
+                <p class="completion-head control-label">Оценка работы</p>
+
+                <?php echo StarRating::widget([
+                    'model' => $newReview,
+                    'attribute' => 'stats',
+                    'pluginOptions' => [
+                        'step' => '1',
+                        'filledStar' => '<img src="/img/star-fill.svg"></img>',
+                        'emptyStar' => '<img src="/img/star-empty.svg"></img>',
+                        'showClear' => false,
+                        'showCaption' => false,
+                    ], ]);?>
+                <?=$form->field($newReview, 'task_id', ['template' => '{input}', 'options' => ['tag' => false]])->hiddenInput(['value' => $task->id]);?>
+                <?= Html::submitInput('Завершить', ['class' => 'button button--pop-up button--pink']); ?>
+            </form>
+        </div>
+        <div class="button-container">
+            <button class="button--close" type="button">Закрыть окно</button>
+        </div>
+        <?php ActiveForm::end(); ?>
+    </div>
+</section>
+
+<section class="pop-up pop-up--act_response pop-up--close">
+    <div class="pop-up--wrapper">
+    <?php $form = ActiveForm::begin([
+                    'id' => 'pop-up--act_response',
+                ]);
+                ?>
+        <h4>Добавление отклика к заданию</h4>
+        <p class="pop-up-text">
+            Вы собираетесь оставить свой отклик к этому заданию.
+            Пожалуйста, укажите стоимость работы и добавьте комментарий, если необходимо.
+        </p>
+        <div class="addition-form pop-up--form regular-form">
+            <form>
+            <?php echo $form->field($newResponse, 'comment', ['template' => "{label}\n{input}\n{error}", 'options' => ['class' => 'form-group'], 'labelOptions' => ['class' => 'control-label']])
+            ->textArea(); ?>
+                <?php echo $form->field($newResponse, 'price', ['template' => "{label}\n{input}\n{error}", 'options' => ['class' => 'form-group'], 'labelOptions' => ['class' => 'control-label']])
+            ->textInput(); ?>
+                <?= Html::submitInput('Откликнуться', ['class' => 'button button--pop-up button--blue']); ?>
+            </form>
+        </div>
+        <div class="button-container">
+            <button class="button--close" type="button">Закрыть окно</button>
+        </div>
+    <?php ActiveForm::end(); ?>
+    </div>
+</section>
+<div class="overlay"></div>
