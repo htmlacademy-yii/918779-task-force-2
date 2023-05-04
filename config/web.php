@@ -5,6 +5,9 @@ $db = require __DIR__ . '/db.php';
 
 $config = [
     'id' => 'basic',
+    'language' => 'ru-RU',
+    'sourceLanguage' => 'ru-RU',
+    'timeZone' => 'Europe/Moscow',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'aliases' => [
@@ -53,7 +56,17 @@ $config = [
                 'tasks' => 'tasks/index',
                 'tasks/view/<id:\d+>' => 'tasks/view',
                 'user/view/<id:\d+>' => 'user/view',
+                'uploads/<id:.+>' => 'uploads',
             ],
+        ],
+
+        'formatter' => [
+            'class' => 'yii\i18n\Formatter',
+            'locale' => 'ru-RU',
+            'defaultTimeZone' => 'Europe/Moscow',
+            'datetimeFormat' => 'php:j F, H:i',
+            'sizeFormatBase' => 1000,
+            'numberFormatterOptions' => [\NumberFormatter::MIN_FRACTION_DIGITS => 0, \NumberFormatter::MAX_FRACTION_DIGITS => 0],
         ],
     ],
     'params' => $params,

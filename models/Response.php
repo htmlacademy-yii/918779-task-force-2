@@ -18,6 +18,11 @@ use Yii;
  */
 class Response extends \yii\db\ActiveRecord
 {
+
+    const POSITION_CONSIDERED = 'considered';
+    const POSITION_ACCEPTED = 'accepted';
+    const POSITION_REFUSED = 'refused';
+
     /**
      * {@inheritdoc}
      */

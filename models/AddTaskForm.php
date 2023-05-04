@@ -8,6 +8,7 @@ use app\models\User;
 use app\models\Category;
 use app\models\Task;
 use app\models\Attachment;
+use yii\web\UploadedFile;
 
 class AddTaskForm extends Model {
 
@@ -33,10 +34,10 @@ class AddTaskForm extends Model {
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::className(), 'targetAttribute' => ['category_id' => 'id']],
             [['description'], 'string'],
             [['title'], 'string', 'max' => 255],
-            ['runtime', 'date', 'format' => 'php:Y-m-d'],
+            ['runtime', 'date', 'format' => 'php:Y-m-d h:i'],
             ['runtime', 'compare', 'compareValue' => date('Y-m-d'), 'operator' => '>', 'type' => 'date'],
             [['estimate', 'category_id'], 'integer'],
-            [['imageFiles'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg', 'maxFiles' => 4],
+            [['imageFiles'], 'file', 'skipOnEmpty' => true, 'maxFiles' => 4],
         ];
     }
 
@@ -101,7 +102,8 @@ class AddTaskForm extends Model {
                 $file->saveAs('@webroot/uploads/' . $newname);
                 $attach->task_id = $newTask->id;
                 $attach->path = $newname;
-                $attach->title = $file->baseName;
+                $attach->title = $file->baseName . '.' . $file->getExtension();
+                $attach->size = $file->size;
                 if (!$attach->save()) {
                     throw new NoUploadFileException('Не удалось загрузить вложения');
                 }

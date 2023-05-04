@@ -38,8 +38,7 @@ $this->title = 'Регистрация';
                     <?php echo $form->field($model, 'role', ['options' => ['class' => 'form-group'], 'labelOptions' => ['class' => 'control-label checkbox-label']])
                     ->checkbox(['template' => "{input}\n{label}", 'checked' => true]);
                         ?>
-                    <?= Html::submitInput('Создать аккаунт', ['class' => 'button button--blue']);
-                    ?>
+                    <?= Html::submitInput('Создать аккаунт', ['class' => 'button button--blue']); ?>
             <?php ActiveForm::end(); ?>
         </div>
     </div>
