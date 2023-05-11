@@ -6,6 +6,8 @@ $db = require __DIR__ . '/db.php';
 $config = [
     'id' => 'basic',
     'language' => 'ru-RU',
+    'defaultRoute' => 'landing/index',
+    'name' => 'Taskforce',
     'sourceLanguage' => 'ru-RU',
     'timeZone' => 'Europe/Moscow',
     'basePath' => dirname(__DIR__),
@@ -57,6 +59,7 @@ $config = [
                 'tasks/view/<id:\d+>' => 'tasks/view',
                 'user/view/<id:\d+>' => 'user/view',
                 'uploads/<id:.+>' => 'uploads',
+                'autocomplete/<location:.*>' => 'autocomplete'
             ],
         ],
 

@@ -652,6 +652,10 @@ template {
   display: flex;
   margin-bottom: 5px; }
 
+.photo-rate input {
+  position: absolute;
+};
+
 .card-photo {
   margin-right: 8px;
   margin-bottom: 8px;
@@ -694,7 +698,8 @@ template {
 .specialization-bio {
   display: -webkit-box;
   display: -ms-flexbox;
-  display: flex; }
+  display: flex;
+  justify-content: space-between;}
 
 .specialization {
   max-width: 427px; }

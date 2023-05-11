@@ -1,5 +1,4 @@
 <?php
-
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
@@ -7,8 +6,10 @@ use app\widgets\ActionWidget;
 use yii\widgets\ListView;
 use kartik\rating\StarRating;
 
-$this->title = 'Просмотр задания';
+$this->registerJsFile('https://api-maps.yandex.ru/2.1/?apikey=e666f398-c983-4bde-8f14-e3fec900592a&lang=ru_RU');
+$this->registerJsFile('/js/map.js');
 
+$this->title = 'Просмотр задания';
 ?>
 
 <main class="main-content container">
@@ -25,10 +26,13 @@ $this->title = 'Просмотр задания';
             echo ActionWidget::widget(['action' => $action]);
             }
         ?>
+
         <div class="task-map">
-            <img class="map" src="/img/map.png"  width="725" height="346" alt="">
-            <p class="map-address town">Москва</p>
-            <p class="map-address">Новый арбат, 23, к. 1</p>
+            <div class="map" id="map" style="width: 725px; height: 346px"></div>
+            <input id="lat" type="hidden" value="<?= HTML::encode($task->lat); ?>">
+            <input id="lng" type="hidden" value="<?= HTML::encode($task->lng); ?>">
+            <p class="map-address town"><?= HTML::encode($task->city); ?></p>
+            <p class="map-address"><?= HTML::encode($task->location); ?></p>
         </div>
 
         <?php

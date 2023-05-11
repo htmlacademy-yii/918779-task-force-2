@@ -9,6 +9,10 @@ use app\models\Category;
 use app\models\Task;
 use app\models\Attachment;
 use yii\web\UploadedFile;
+use yii\helpers\ArrayHelper;
+use Taskforce\Exceptions\NoAddTaskException;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Client;
 
 class AddTaskForm extends Model {
 
@@ -18,6 +22,9 @@ class AddTaskForm extends Model {
     public $location;
     public $estimate;
     public $runtime;
+    public $lat;
+    public $lng;
+    public $city;
 
         /**
      * @var UploadedFile
@@ -34,10 +41,12 @@ class AddTaskForm extends Model {
             [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::className(), 'targetAttribute' => ['category_id' => 'id']],
             [['description'], 'string'],
             [['title'], 'string', 'max' => 255],
-            ['runtime', 'date', 'format' => 'php:Y-m-d h:i'],
+            ['runtime', 'date', 'format' => 'php:Y-m-d'],
             ['runtime', 'compare', 'compareValue' => date('Y-m-d'), 'operator' => '>', 'type' => 'date'],
             [['estimate', 'category_id'], 'integer'],
             [['imageFiles'], 'file', 'skipOnEmpty' => true, 'maxFiles' => 4],
+            [['location'], 'string'],
+            [['lat', 'lng'], 'double', 'max' => 13, 'min' => 10],
         ];
     }
 
@@ -69,6 +78,12 @@ class AddTaskForm extends Model {
         $task->runtime = $this->runtime;
         $task->status = Task::STATUS_NEW;
         $task->city_id = 1;
+        if ($this->lat && $this->lng)
+        {
+            $task->lat = $this->lat;
+            $task->lng = $this->lng;
+            $task->location = $this->location;
+        }
 
         $transaction = \Yii::$app->db->beginTransaction();
         try {
@@ -109,7 +124,5 @@ class AddTaskForm extends Model {
                 }
             }
         }
-
-
     }
 }

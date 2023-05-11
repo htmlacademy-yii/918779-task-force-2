@@ -29,7 +29,7 @@ class TasksController extends AccessController {
         $rules = parent::behaviors();
         $rule = [
             'allow' => false,
-            'actions' => ['add'],
+            'actions' => ['add', 'accept', 'reject'],
             'matchCallback' => function ($rule, $action) {
                 return Yii::$app->user->identity->role !== 'customer';
             }
@@ -202,6 +202,14 @@ class TasksController extends AccessController {
             $form->load(Yii::$app->request->post());
 
             if ($form->validate()) {
+
+                if($form->location && !$form->lat && !$form->lng)
+                {
+                    $addresses = AutocompleteController::getGeocoder($form->location);
+                    $form->lat = $addresses[0]['lat'];
+                    $form->lng = $addresses[0]['lng'];
+                    $form->location = $addresses[0]['location'];
+                }
                 $newTask = $form->addTask();
                 return $this->redirect(['tasks/view', 'id' => $newTask->id]);
             }
@@ -209,7 +217,7 @@ class TasksController extends AccessController {
 
         return $this->render('add', [
             'model' => $form,
-            'categories' => $categories,
+            'categories' => $categories
         ]);
     }
 }

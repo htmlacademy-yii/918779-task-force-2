@@ -4,6 +4,10 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 
+$this->registerCssFile('https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.7/dist/css/autoComplete.02.min.css');
+$this->registerJsFile('https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.7/dist/autoComplete.min.js', ['position' => \yii\web\View::POS_HEAD]);
+$this->registerJsFile('../../js/autoComplete.js');
+
 $this->title = 'Создание задания';
 
 ?>
@@ -15,18 +19,19 @@ $this->title = 'Создание задания';
         ]);
         ?>
             <h3 class="head-main head-main">Публикация нового задания</h3>
-            <?php echo $form->field($model, 'title', ['template' => "{label}\n{input}\n{error}", 'options' => ['class' => 'form-group'], 'labelOptions' => ['class' => 'control-label']])
+
+            <?php
+                echo $form->field($model, 'title', ['template' => "{label}\n{input}\n{error}", 'options' => ['class' => 'form-group'], 'labelOptions' => ['class' => 'control-label']])
                 ->textInput();
-            ?>
-            <?php echo $form->field($model, 'description', ['template' => "{label}\n{input}\n{error}", 'options' => ['class' => 'form-group'], 'labelOptions' => ['class' => 'control-label']])
+                echo $form->field($model, 'description', ['template' => "{label}\n{input}\n{error}", 'options' => ['class' => 'form-group'], 'labelOptions' => ['class' => 'control-label']])
                 ->textarea();
+                echo $form->field($model, 'category_id', ['template' => "{label}\n{input}\n{error}", 'options' => ['class' => 'form-group'], 'labelOptions' => ['class' => 'control-label']])->dropDownList($categories);
+                echo $form->field($model, 'location', ['template' => "{label}\n{input}\n{error}", 'options' => ['class' => 'form-group'], 'labelOptions' => ['class' => 'control-label']])
+                ->textInput(['class' => 'location-icon', 'id' => 'autoComplete', 'type' => 'search', 'dir' => 'ltr', 'spellcheck' => 'false', 'autocorrect' => 'off', 'autocomplete' => 'off', 'autocapitalize' => 'off']);
+                echo $form->field($model, 'lat', ['template' => "{input}", 'options' => ['class' => 'form-group'], 'labelOptions' => ['class' => 'control-label']])->hiddenInput();
+                echo $form->field($model, 'lng', ['template' => "{input}", 'options' => ['class' => 'form-group'], 'labelOptions' => ['class' => 'control-label']])->hiddenInput();
             ?>
-            <?php echo $form->field($model, 'category_id', ['template' => "{label}\n{input}", 'options' => ['class' => 'form-group'], 'labelOptions' => ['class' => 'control-label']])->dropDownList($categories); ?>
-            <div class="form-group">
-                <label class="control-label" for="location">Локация</label>
-                <input class="location-icon" id="location" type="text">
-                <span class="help-block">Error description is here</span>
-            </div>
+
             <div class="half-wrapper">
                 <?php echo $form->field($model, 'estimate', ['template' => "{label}\n{input}\n{error}", 'options' => ['class' => 'form-group'], 'labelOptions' => ['class' => 'control-label']])
                     ->textInput(['class' => 'budget-icon']);
