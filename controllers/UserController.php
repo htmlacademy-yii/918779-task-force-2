@@ -10,6 +10,8 @@ use app\models\Category;
 use app\models\Response;
 use app\models\TaskFilterForm;
 use app\models\City;
+use app\models\Auth;
+use yii\authclient\clients\VKontakte;
 use yii\db\Expression;
 use yii\filters\AccessControl;
 use yii\web\NotFoundHttpException;

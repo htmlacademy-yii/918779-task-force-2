@@ -71,6 +71,18 @@ $config = [
             'sizeFormatBase' => 1000,
             'numberFormatterOptions' => [\NumberFormatter::MIN_FRACTION_DIGITS => 0, \NumberFormatter::MAX_FRACTION_DIGITS => 0],
         ],
+
+        'authClientCollection' => [
+            'class' => 'yii\authclient\Collection',
+            'clients' => [
+                'vkontakte' => [
+                    'class' => 'yii\authclient\clients\VKontakte',
+                    'clientId' => 51642800,
+                    'clientSecret' => 'o78DngkUM5SSXYLqRXwK',
+                    'scope' => 'email',
+                ],
+            ],
+        ]
     ],
     'params' => $params,
 ];
