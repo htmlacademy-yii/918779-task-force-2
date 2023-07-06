@@ -10,6 +10,9 @@ use app\models\Category;
 use app\models\Response;
 use app\models\TaskFilterForm;
 use app\models\City;
+use app\models\SettingsForm;
+use app\models\ChangePasswordForm;
+use app\models\Specialization;
 use app\models\Auth;
 use yii\authclient\clients\VKontakte;
 use yii\db\Expression;
@@ -45,6 +48,28 @@ class UserController extends Controller
         return $this->render('view', [
             'user' => $user,
             ]);
+    }
+
+    public function actionSettings()
+    {
+
+        $type = !empty(Yii::$app->request->get('type')) ? Yii::$app->request->get('type') : SettingsForm::PROFILE;
+  
+        $model = ($type === SettingsForm::SECURITY) ? new ChangePasswordForm() : new SettingsForm();
+        $categories = Category::find()->all();
+
+        if (Yii::$app->request->getIsPost()) 
+        {
+            $model->load(Yii::$app->request->post());
+
+            if ($model->validate()) 
+            {
+                $settings = ($type === SettingsForm::SECURITY) ? $model->changePassword() : $model->editProfile();               
+                $this->redirect(['user/view', 'id' => Yii::$app->user->getId()]);
+            }
+        }
+    
+        return $this->render('settings', ['model' => $model, 'categories' => $categories, 'type' => $type]);
     }
 
     public function actionLogout()

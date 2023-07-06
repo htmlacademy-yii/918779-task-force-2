@@ -65,6 +65,7 @@
         <div class="right-card black">
             <div class="search-form">
             <?php $form = ActiveForm::begin([
+                'method' => 'get',
                 'id' => 'search-form',
             ]);
             ?>

@@ -57,7 +57,9 @@ $config = [
                 '//' => '/',
                 'tasks' => 'tasks/index',
                 'tasks/view/<id:\d+>' => 'tasks/view',
+                'tasks/my/<filter:.+>' => 'tasks/my',
                 'user/view/<id:\d+>' => 'user/view',
+                'user/settings/<type:.+>' => 'user/settings',
                 'uploads/<id:.+>' => 'uploads',
                 'autocomplete/<location:.*>' => 'autocomplete'
             ],
@@ -69,7 +71,9 @@ $config = [
             'defaultTimeZone' => 'Europe/Moscow',
             'datetimeFormat' => 'php:j F, H:i',
             'sizeFormatBase' => 1000,
-            'numberFormatterOptions' => [\NumberFormatter::MIN_FRACTION_DIGITS => 0, \NumberFormatter::MAX_FRACTION_DIGITS => 0],
+            'decimalSeparator' => '.',
+            'numberFormatterOptions' => [\NumberFormatter::MIN_FRACTION_DIGITS => 0, \NumberFormatter::MAX_FRACTION_DIGITS => 2],
+            
         ],
 
         'authClientCollection' => [

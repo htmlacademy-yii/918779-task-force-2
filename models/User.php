@@ -33,8 +33,8 @@ use yii\web\IdentityInterface;
  */
 class User extends ActiveRecord implements IdentityInterface
 {
-
-
+    const HIDE_CONTACTS = 'hide';
+    const SHOW_CONTACTS = 'show';
 
     /**
      * {@inheritdoc}
@@ -197,17 +197,68 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * Gets user statistics update.
+     * Gets user statistic.
      *
+     * @return array
+     */
+    public function getUserStats(): array
+    {
+        $totalReview = Review::find()->where(['user_id' => $this->id])->sum('stats');
+        $countReview = Review::find()->where('stats > 0')->andWhere(['user_id' => $this->id])->count('stats');
+        $countFailedTasks = Task::find()->where(['user_id' => $this->id, 'status' => Tasks::STATUS_FAILED])->count('id');
+        $this->stats = $totalReview / ($countReview + $countFailedTasks);
+        $this->save();
+
+        $position = User::find()
+        ->select('ROW_NUMBER() OVER (ORDER BY stats DESC)')
+        ->indexBy('id')
+        ->column();
+
+        $userStats = [
+            'count' => $countReview,
+            'failed' => $countFailedTasks,
+            'position' => $position[$this->id]
+        ];
+
+        return $userStats;
+    }
+
+    /**
+     * Gets user age.
      *
+     * @return int
+     */
+    public function getUserAge(): int
+    {
+        $userAge = date_diff(date_create(date('Y-m-d')), date_create($this->birthday));
+
+        return $userAge->format('%y');
+    }
+
+        /**
+     * Gets user status.
+     *
+     * @return string
      */
 
-    public function updateStats()
+    public function getUserStatus(): string 
     {
-        $total = Review::find()->where(['user_id' => $this->id])->sum('stats');
-        $countCompletedTasks = Review::find()->where('stats > 0')->andFilterWhere(['user_id' => $this->id])->count('stats');
-        $countFailedTasks = Task::find()->where(['user_id' => $this->id, 'status' => Tasks::STATUS_FAILED])->count('id');
-        $totalStats = $total / ($countCompletedTasks + $countFailedTasks);
-        $this->save();
+        
+        if (Yii::$app->user->identity->role === Tasks::EXECUTOR) 
+        {
+            $count = Task::find()->where(['user_id' => $this->id])->andWhere(['status' =>Tasks::STATUS_WORKING])->count();
+            $this->status = Tasks::USER_STATUS_FREE;
+            $userStatus = 'Открыт для новых заказов';
+
+            if ($count > 0)
+            {
+                $this->status = Tasks::USER_STATUS_BUSY;
+                $userStatus = 'Занят';
+            }           
+            
+            $this->save();
+        }
+        
+        return $userStatus;
     }
 }

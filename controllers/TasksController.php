@@ -48,8 +48,9 @@ class TasksController extends AccessController {
         $tasks = $filter->getTasks()->all();
         $categories = Category::find()->all();
 
-        if (Yii::$app->request->getIsPost()) {
-            $filter->load(Yii::$app->request->post());
+        if (Yii::$app->request->getIsGet()) 
+        {
+            $filter->load(Yii::$app->request->get());
 
             if ($filter->validate()) {
                 $tasks = $filter->apply();
@@ -218,6 +219,54 @@ class TasksController extends AccessController {
         return $this->render('add', [
             'model' => $form,
             'categories' => $categories
+        ]);
+    }
+
+    public function actionMy()    
+    {
+
+        $idCurrent = Yii::$app->user->getId();
+
+        if (Yii::$app->user->identity->role === Tasks::CUSTOMER) 
+        {
+            $filter = !empty(Yii::$app->request->get('filter')) ? Yii::$app->request->get('filter') : Tasks::FILTER_NEW;
+
+            $statusFilters = [
+                'new' => Tasks::STATUS_NEW,
+                'working' => Tasks::STATUS_WORKING,
+                'closed' => [Tasks::STATUS_CANCELED, Tasks::STATUS_DONE, Tasks::STATUS_FAILED],
+            ];
+        }
+
+        if (Yii::$app->user->identity->role === Tasks::EXECUTOR) {
+
+            $filter = !empty(Yii::$app->request->get('filter')) ? Yii::$app->request->get('filter') : Tasks::FILTER_WORKING;
+
+            $statusFilters = [
+                'working' => Tasks::STATUS_WORKING,
+                'overdue' => Tasks::STATUS_WORKING,
+                'closed' => [Tasks::STATUS_DONE, Tasks::STATUS_FAILED],
+            ];
+        }
+
+        $tasks = Task::find()
+        ->where(['task.user_id' => $idCurrent, 'task.status' => $statusFilters[$filter]])
+        ->joinWith(['category', 'city', 'responses'])
+        ->all();
+
+        if ($filter === Tasks::FILTER_OVERDUE) {
+            $tasks = Task::find()
+            ->where(['task.user_id' => $idCurrent, 'task.status' => $statusFilters[$filter]])
+            ->joinWith(['category', 'city', 'responses'])
+            ->andWhere('runtime < CURDATE()')
+            ->all();
+        }
+
+        return $this->render('my', [
+
+            'tasks' => $tasks,
+            'filter' => $filter
+
         ]);
     }
 }

@@ -111,7 +111,6 @@ $this->title = 'Просмотр задания';
             <?php echo $form->field($newReview, 'comment', ['template' => "{label}\n{input}\n{error}", 'options' => ['class' => 'form-group'], 'labelOptions' => ['class' => 'control-label']])
             ->textArea(); ?>
                 <p class="completion-head control-label">Оценка работы</p>
-
                 <?php echo StarRating::widget([
                     'model' => $newReview,
                     'attribute' => 'stats',

@@ -11,6 +11,7 @@ use app\models\Attachment;
 use yii\web\UploadedFile;
 use yii\helpers\ArrayHelper;
 use Taskforce\Exceptions\NoAddTaskException;
+use Taskforce\Exceptions\NoUploadFileException;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Client;
 
