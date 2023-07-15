@@ -3,12 +3,14 @@
     use yii\helpers\Url;
     use yii\helpers\ArrayHelper;
     use yii\widgets\ActiveForm;
+    use yii\widgets\LinkPager;
 
     $this->title = 'Задания';
 ?>
 <main class="main-content container">
-   <div class="left-column">
+<div class="left-column">
       <h3 class="head-main head-task">Новые задания</h3>
+
          <?php foreach ($tasks as $task): ?>
          <div class="task-card">
             <div class="header-task">
@@ -41,31 +43,29 @@
             </div>
         </div>
         <?php endforeach; ?>
+
+
+
         <div class="pagination-wrapper">
-            <ul class="pagination-list">
-                <li class="pagination-item mark">
-                    <a href="#" class="link link--page"></a>
-                </li>
-                <li class="pagination-item">
-                    <a href="#" class="link link--page">1</a>
-                </li>
-                <li class="pagination-item pagination-item--active">
-                    <a href="#" class="link link--page">2</a>
-                </li>
-                <li class="pagination-item">
-                    <a href="#" class="link link--page">3</a>
-                </li>
-                <li class="pagination-item mark">
-                    <a href="#" class="link link--page"></a>
-                </li>
-            </ul>
+            <?php echo LinkPager::widget([
+                'pagination' => $pagination,
+                'options' => ['class' => 'pagination-list'],
+                'linkContainerOptions' => ['class' => 'pagination-item'],
+                'linkOptions' => ['class' => 'link link--page'],
+                'activePageCssClass' => 'pagination-item--active',
+                'prevPageCssClass' => 'mark',
+                'nextPageCssClass' => 'mark',
+                'nextPageLabel' => '',
+                'prevPageLabel' => '',
+            ]);
+            ?>
         </div>
     </div>
     <div class="right-column">
         <div class="right-card black">
             <div class="search-form">
             <?php $form = ActiveForm::begin([
-                'method' => 'get',
+                'method' => 'post',
                 'id' => 'search-form',
             ]);
             ?>

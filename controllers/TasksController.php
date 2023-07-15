@@ -21,6 +21,7 @@ use yii\helpers\ArrayHelper;
 
 use yii\web\NotFoundHttpException;
 use yii\data\ActiveDataProvider;
+use yii\data\Pagination;
 
 class TasksController extends AccessController {
 
@@ -40,17 +41,22 @@ class TasksController extends AccessController {
         return $rules;
     }
 
-    public function actionIndex()
-    {
+    public function actionIndex() {
 
         $filter = new TaskFilterForm();
 
-        $tasks = $filter->getTasks()->all();
+        $query = $filter->getTasks();
+        $pagination = new Pagination(['totalCount' => $query->count(), 'pageSize' => 5]);
+        $pagination->pageSizeParam = false;
+        $pagination->forcePageParam = false;
+        $tasks = $query->offset($pagination->offset)
+        ->limit(5)
+        ->all();
+
         $categories = Category::find()->all();
 
-        if (Yii::$app->request->getIsGet()) 
-        {
-            $filter->load(Yii::$app->request->get());
+        if (Yii::$app->request->getIspost()) {
+            $filter->load(Yii::$app->request->post());
 
             if ($filter->validate()) {
                 $tasks = $filter->apply();
@@ -60,6 +66,7 @@ class TasksController extends AccessController {
         return $this->render('index', [
             'tasks' => $tasks,
             'filter' => $filter,
+            'pagination' => $pagination,
             'categories' => $categories,
             'period_values' => TaskFilterForm::PERIOD_VALUES
         ]);
