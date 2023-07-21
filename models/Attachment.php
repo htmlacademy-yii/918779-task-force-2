@@ -33,7 +33,9 @@ class Attachment extends \yii\db\ActiveRecord
             [['task_id', 'title', 'path'], 'required'],
             [['task_id'], 'integer'],
             [['title', 'path'], 'string', 'max' => 255],
-            [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Task::className(), 'targetAttribute' => ['task_id' => 'id']],
+            [['task_id'], 'exist',
+            'skipOnError' => true, 'targetClass' => Task::className(),
+            'targetAttribute' => ['task_id' => 'id']],
         ];
     }
 

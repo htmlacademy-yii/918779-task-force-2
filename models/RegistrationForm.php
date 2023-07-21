@@ -7,8 +7,8 @@ use app\models\User;
 use app\models\City;
 use yii;
 
-class RegistrationForm extends Model {
-
+class RegistrationForm extends Model
+{
     public $name;
     public $email;
     public $password;
@@ -28,10 +28,11 @@ class RegistrationForm extends Model {
             [['name', 'email', 'password', 'repeat_password', 'city_id'], 'required'],
             [['city_id'], 'integer'],
             [['role', 'password', 'repeat_password', 'name', 'email'], 'string'],
-            [['repeat_password'], 'compare', 'compareAttribute'=>'password'],
+            [['repeat_password'], 'compare', 'compareAttribute' => 'password'],
             [['email'], 'email'],
             [['email'], 'unique', 'targetClass' => User::class],
-            [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => City::className(), 'targetAttribute' => ['city_id' => 'id']],
+            [['city_id'], 'exist', 'skipOnError' => true,
+            'targetClass' => City::className(), 'targetAttribute' => ['city_id' => 'id']],
         ];
     }
 

@@ -2,6 +2,6 @@
 
 namespace Taskforce\Exceptions;
 
-class FileFormatException extends \Exception {
-
+class FileFormatException extends \Exception
+{
 }

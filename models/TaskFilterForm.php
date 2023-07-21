@@ -9,14 +9,14 @@ use app\models\Category;
 use app\models\Response;
 use yii\db\ActiveQuery;
 
-class TaskFilterForm extends Model {
-
+class TaskFilterForm extends Model
+{
     public const PERIOD_HOUR = 1;
     public const PERIOD_HALF_DAY = 12;
     public const PERIOD_DAY = 24;
     public const PERIOD_DEFAULT = 0;
 
-    const PERIOD_VALUES = [
+    public const PERIOD_VALUES = [
         '0' => 'Без ограничений',
         '1' => '1 час',
         '12'  => '12 часов',
@@ -56,7 +56,7 @@ class TaskFilterForm extends Model {
 
         settype($this->period, 'integer');
 
-        switch($this->period) {
+        switch ($this->period) {
             case self::PERIOD_HOUR:
                 return $tasks->andWhere(['=', 'creation', "DATE_SUB(NOW(), INTERVAL self::PERIOD_HOUR HOUR)"]);
 
@@ -66,7 +66,6 @@ class TaskFilterForm extends Model {
             case self::PERIOD_DAY:
                 return $tasks->andWhere(['=', 'creation', "DATE_SUB(NOW(), INTERVAL self::PERIOD_DAY HOUR)"]);
         };
-
     }
 
     /**
@@ -94,17 +93,22 @@ class TaskFilterForm extends Model {
         return $tasks;
     }
 
-    public function attributeLabels(): array {
+    public function attributeLabels(): array
+    {
         return [
             'noResponse' => self::NO_RESPONSE,
         ];
     }
 
-    public function rules() {
+    public function rules()
+    {
         return [
             [['categories'], 'default', 'value' => []],
-            [['categories'], 'each', 'rule' => ['exist', 'skipOnError' => true, 'targetClass' => Category::class, 'targetAttribute' => ['categories' => 'id']]],
-            ['period', 'in', 'range' => [self::PERIOD_HOUR, self::PERIOD_HALF_DAY, self::PERIOD_DAY, self::PERIOD_DEFAULT]],
+            [['categories'], 'each', 'rule' => [
+            'exist', 'skipOnError' => true, 'targetClass' => Category::class, 'targetAttribute' => [
+            'categories' => 'id']]],
+            ['period', 'in', 'range' => [
+            self::PERIOD_HOUR, self::PERIOD_HALF_DAY, self::PERIOD_DAY, self::PERIOD_DEFAULT]],
             ['noResponse', 'boolean'],
         ];
     }

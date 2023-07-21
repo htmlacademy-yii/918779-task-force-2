@@ -2,6 +2,6 @@
 
 namespace Taskforce\Exceptions;
 
-class NoAvailableActionsException extends \Exception {
-
+class NoAvailableActionsException extends \Exception
+{
 }

@@ -3,7 +3,6 @@
 namespace app\models;
 
 use Yii;
-
 use TaskForce\Exceptions\SourceFileException;
 
 /**

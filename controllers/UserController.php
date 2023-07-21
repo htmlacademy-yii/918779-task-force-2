@@ -67,21 +67,19 @@ class UserController extends Controller
     {
 
         $type = !empty(Yii::$app->request->get('type')) ? Yii::$app->request->get('type') : SettingsForm::PROFILE;
-  
+
         $model = ($type === SettingsForm::SECURITY) ? new ChangePasswordForm() : new SettingsForm();
         $categories = Category::find()->all();
 
-        if (Yii::$app->request->getIsPost()) 
-        {
+        if (Yii::$app->request->getIsPost()) {
             $model->load(Yii::$app->request->post());
 
-            if ($model->validate()) 
-            {
-                $settings = ($type === SettingsForm::SECURITY) ? $model->changePassword() : $model->editProfile();               
+            if ($model->validate()) {
+                $settings = ($type === SettingsForm::SECURITY) ? $model->changePassword() : $model->editProfile();
                 $this->redirect(['user/view', 'id' => Yii::$app->user->getId()]);
             }
         }
-    
+
         return $this->render('settings', ['model' => $model, 'categories' => $categories, 'type' => $type]);
     }
 
@@ -90,5 +88,4 @@ class UserController extends Controller
         Yii::$app->user->logout();
         return $this->redirect('/landing');
     }
-
- }
+}

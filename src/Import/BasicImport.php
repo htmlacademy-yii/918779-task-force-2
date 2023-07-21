@@ -7,8 +7,8 @@ use Taskforce\Exceptions\SourceFileException;
 use SplFileObject;
 use RuntimeException;
 
-abstract class BasicImport {
-
+abstract class BasicImport
+{
     public $filename;
     public $columns = [];
     private $fileObject;
@@ -20,21 +20,21 @@ abstract class BasicImport {
      * @param $filename - Путь к файлу csv
      */
 
-    public function __construct(string $filename) {
+    public function __construct(string $filename)
+    {
 
         $this->filename = $filename;
     }
 
-    public function import():void {
+    public function import(): void
+    {
         if (!file_exists($this->filename)) {
             throw new SourceFileException("Файл не существует");
         }
 
         try {
             $this->fileObject = new SplFileObject($this->filename);
-        }
-
-        catch (RuntimeException $exception) {
+        } catch (RuntimeException $exception) {
             throw new SourceFileException("Не удалось открыть файл для чтения");
         }
 
@@ -49,7 +49,8 @@ abstract class BasicImport {
         }
     }
 
-    public function writeDb(string $dirname):void {
+    public function writeDb(string $dirname): void
+    {
 
         $basename = $this->fileObject->getBasename(".csv");
         $templates = "";
@@ -57,9 +58,13 @@ abstract class BasicImport {
         $rows = $this->result;
 
         foreach ($rows as $row) {
-            $template = sprintf("INSERT INTO %s (%s) VALUES (%s);\n", $basename, $this->getColumnNames(), $this->toSQLRow($row));
+            $template = sprintf(
+                "INSERT INTO %s (%s) VALUES (%s);\n",
+                $basename,
+                $this->getColumnNames(),
+                $this->toSQLRow($row)
+            );
             $templates .= $template;
-
         }
 
         $sqlfile = sprintf("%s/%s.sql", $dirname, $basename);
@@ -67,16 +72,17 @@ abstract class BasicImport {
         if (!file_put_contents($sqlfile, $templates)) {
             throw new SourceFileException("Не удалось экспортировать данные в файл");
         }
-
     }
 
-    private function getHeaderData():?array {
+    private function getHeaderData(): ?array
+    {
         $this->fileObject->rewind();
         $data = $this->fileObject->fgetcsv();
         return $data;
     }
 
-    private function getNextLine():?iterable {
+    private function getNextLine(): ?iterable
+    {
         $result = null;
 
         while (!$this->fileObject->eof()) {
@@ -86,22 +92,20 @@ abstract class BasicImport {
         return $result;
     }
 
-    public function getColumnNames():string {
+    public function getColumnNames(): string
+    {
         $row = $this->columns[0];
         $row = implode(", ", $row);
         return $row;
     }
 
-    public function toSQLRow(array $row):string {
-
-            $row = array_map (function ($row) {
-             return "'{$row}'";
-            },
-
-            $row);
-
-            $row = implode(", ", $row);
-            return $row;
+    public function toSQLRow(array $row): string
+    {
+        $row = array_map(function ($row) {
+            return "'{$row}'";
+        },
+        $row);
+        $row = implode(", ", $row);
+        return $row;
     }
-
 };

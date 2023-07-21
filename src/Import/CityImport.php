@@ -2,10 +2,10 @@
 
 namespace Taskforce\Import;
 
-class CityImport extends BasicImport {
-
-    public function getColumnNames():string {
+class CityImport extends BasicImport
+{
+    public function getColumnNames(): string
+    {
         return 'title, lat, lng';
-     }
-
+    }
 }

@@ -24,13 +24,14 @@ AppAsset::register($this);
         <a href='<?= Url::to(['/tasks']); ?>' class="header-logo">
             <img class="logo-image" src="/img/logotype.png" width=227 height=60 alt="taskforce">
         </a>
-        <?php if(!Yii::$app->user->isGuest): ?>
+        <?php if (!Yii::$app->user->isGuest) : ?>
         <div class="nav-wrapper">
-        <?php echo Menu::widget([
+            <?php echo Menu::widget([
             'items' => [
                 ['label' => 'Новое', 'url' => ['tasks/index']],
                 ['label' => 'Мои задания', 'url' => ['tasks/my']],
-                ['label' => 'Создать задание', 'url' => ['tasks/add'], 'visible' => Yii::$app->user->identity->role === Tasks::CUSTOMER],
+                ['label' => 'Создать задание', 'url' => [
+                'tasks/add'], 'visible' => Yii::$app->user->identity->role === Tasks::CUSTOMER],
                 ['label' => 'Настройки', 'url' => ['user/settings']],
             ],
             'options' => ['class' => 'nav-list'],
@@ -38,18 +39,20 @@ AppAsset::register($this);
             'activeCssClass' => 'list-item--active',
             'linkTemplate' => '<a class="link link--nav" href="{url}">{label}</a>',
         ]);
-        ?>
+            ?>
         </div>
         <?php endif; ?>
     </nav>
-    <?php if(!Yii::$app->user->isGuest): ?>
+    <?php if (!Yii::$app->user->isGuest) : ?>
     <div class="user-block">
-        <a href="<?= Url::to(['/user/view', 'id' => Yii::$app->user->getId()]); ?>">
-            <img class="user-photo" src="<?= Html::encode(Yii::$app->user->getIdentity()->avatar); ?>" width="55" height="55" alt="Аватар">
+        <a href="<?= Url::to([
+        '/user/view', 'id' => Yii::$app->user->getId()]); ?>">
+            <img class="user-photo" src="<?= Html::encode(Yii::$app->user->getIdentity()->avatar); ?>" 
+            width="55" height="55" alt="Аватар">
         </a>
         <div class="user-menu">
             <p class="user-name">
-            <?php if (isset(Yii::$app->user->identity->name)): ?>
+            <?php if (isset(Yii::$app->user->identity->name)) : ?>
                 <?= Html::encode(Yii::$app->user->identity->name); ?>
             <?php endif; ?>
             </p>

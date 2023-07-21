@@ -15,8 +15,8 @@ use Taskforce\Exceptions\NoUploadFileException;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Client;
 
-class AddTaskForm extends Model {
-
+class AddTaskForm extends Model
+{
     public $title;
     public $description;
     public $category_id;
@@ -39,11 +39,14 @@ class AddTaskForm extends Model {
     {
         return [
             [['title', 'description', 'category_id'], 'required'],
-            [['category_id'], 'exist', 'skipOnError' => true, 'targetClass' => Category::className(), 'targetAttribute' => ['category_id' => 'id']],
+            [['category_id'], 'exist',
+            'skipOnError' => true, 'targetClass' => Category::className(),
+            'targetAttribute' => ['category_id' => 'id']],
             [['description'], 'string'],
             [['title'], 'string', 'max' => 255],
             ['runtime', 'date', 'format' => 'php:Y-m-d'],
-            ['runtime', 'compare', 'compareValue' => date('Y-m-d'), 'operator' => '>', 'type' => 'date'],
+            ['runtime', 'compare', 'compareValue' => date('Y-m-d'),
+            'operator' => '>', 'type' => 'date'],
             [['estimate', 'category_id'], 'integer'],
             [['imageFiles'], 'file', 'skipOnEmpty' => true, 'maxFiles' => 4],
             [['location'], 'string'],
@@ -85,8 +88,7 @@ class AddTaskForm extends Model {
         $task->status = Task::STATUS_NEW;
         $task->city_id = City::findOne(['title' => $this->city])->id ?? 1001;
         $task->city = $this->city;
-        if ($this->lat && $this->lng)
-        {
+        if ($this->lat && $this->lng) {
             $task->lat = $this->lat;
             $task->lng = $this->lng;
             $task->location = $this->location;
@@ -94,17 +96,15 @@ class AddTaskForm extends Model {
 
         $transaction = \Yii::$app->db->beginTransaction();
         try {
-            if (!$task->save()){
+            if (!$task->save()) {
                 throw new NoAddTaskException("Не удалось добавить задание");
             }
 
             $this->uploads($task);
             $transaction->commit();
-
         } catch (\Exception $e) {
             $transaction->rollBack();
             throw $e;
-
         } catch (\Throwable $e) {
             $transaction->rollBack();
             throw $e;

@@ -12,10 +12,16 @@ $this->title = 'Начальная страница';
     <h2>Вход на сайт</h2>
     <?php $form = ActiveForm::begin(['id' => 'login-form']) ?>
         <p>
-         <?= $form->field($model, 'email', ['enableAjaxValidation' => true])->input('email', ['class' => 'enter-form-email input input-middle'])->label('Email', ['class' => 'form-modal-description']); ?>
+         <?= $form->field($model, 'email', [
+            'enableAjaxValidation' => true])->input('email', [
+            'class' => 'enter-form-email input input-middle'])->label('Email', [
+            'class' => 'form-modal-description']); ?>
          </p>
          <p>
-         <?= $form->field($model, 'password', ['enableAjaxValidation' => true])->passwordInput(['class' => 'enter-form-email input input-middle'])->label('Пароль', ['class' => 'form-modal-description']); ?>
+         <?= $form->field($model, 'password', [
+            'enableAjaxValidation' => true])->passwordInput([
+            'class' => 'enter-form-email input input-middle'])->label('Пароль', [
+            'class' => 'form-modal-description']); ?>
          </p>
          <?= Html::submitButton('Войти', ['class' => 'button']) ?>
     <?php ActiveForm::end() ?>

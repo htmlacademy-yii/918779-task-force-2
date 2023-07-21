@@ -2,6 +2,6 @@
 
 namespace Taskforce\Exceptions;
 
-class NoEditSettingsException extends \Exception {
-
+class NoEditSettingsException extends \Exception
+{
 }

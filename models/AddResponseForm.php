@@ -8,8 +8,8 @@ use app\models\User;
 use app\models\Task;
 use app\models\Response;
 
-class AddResponseForm extends Model {
-
+class AddResponseForm extends Model
+{
     public $task_id;
     public $user_id;
     public $price;
@@ -24,8 +24,12 @@ class AddResponseForm extends Model {
             [['price', 'comment'], 'required'],
             [['task_id', 'user_id', 'price'], 'integer'],
             [['comment'], 'string'],
-            [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Task::className(), 'targetAttribute' => ['task_id' => 'id']],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
+            [['task_id'], 'exist', 'skipOnError' => true,
+            'targetClass' => Task::className(),
+            'targetAttribute' => ['task_id' => 'id']],
+            [['user_id'], 'exist', 'skipOnError' => true,
+            'targetClass' => User::className(),
+            'targetAttribute' => ['user_id' => 'id']],
         ];
     }
 
@@ -55,5 +59,4 @@ class AddResponseForm extends Model {
 
         return $response->save();
     }
-
 }

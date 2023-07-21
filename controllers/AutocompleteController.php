@@ -10,7 +10,6 @@ use yii\helpers\ArrayHelper;
 
 class AutocompleteController extends Controller
 {
-
     public static function getGeocoder($location)
     {
         $api_key = Yii::$app->params['apiKey'];
@@ -35,15 +34,13 @@ class AutocompleteController extends Controller
                 ]
         ]);
 
-        try
-        {
+        try {
             $content = $response->getBody()->getContents();
             $response = json_decode($content, true);
             $options = ArrayHelper::getValue($response, $geocoder_options_key);
             $result = [];
 
-            foreach ($options as $value)
-            {
+            foreach ($options as $value) {
                 $coordinates = explode(' ', ArrayHelper::getValue($value, $geocoder_coordinates_key));
                 $address = explode(',', ArrayHelper::getValue($value, $geocoder_city_key));
 
@@ -55,15 +52,12 @@ class AutocompleteController extends Controller
                     'lat' => $coordinates[1],
                 ];
             }
-        }
-
-        catch(RequestException $e)
-        {
+        } catch (RequestException $e) {
             $result = [];
         }
 
         return $result;
-    }   
+    }
 
     public function actionIndex($location)
     {

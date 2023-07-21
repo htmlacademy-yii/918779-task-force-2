@@ -2,8 +2,8 @@
 
 namespace Taskforce\Actions;
 
-class DoneAction extends DefaultAction {
-
+class DoneAction extends DefaultAction
+{
     public const ACTION_DONE = 'done';
     public const ACTION_CLASS = 'button button--pink action-btn';
     public const ACTION_DATA = 'completion';
@@ -13,7 +13,7 @@ class DoneAction extends DefaultAction {
      *
      * @return string
      */
-    public function getInternalName():string
+    public function getInternalName(): string
     {
         return self::ACTION_DONE;
     }
@@ -23,7 +23,7 @@ class DoneAction extends DefaultAction {
      *
      * @return string
      */
-    public function getTitle():string
+    public function getTitle(): string
     {
         return 'Выполнено';
     }
@@ -43,7 +43,7 @@ class DoneAction extends DefaultAction {
      *
      * @return string
      */
-    public function getData():string
+    public function getData(): string
     {
         return self::ACTION_DATA;
     }
@@ -57,7 +57,4 @@ class DoneAction extends DefaultAction {
     {
         return $this->idCustomer === $idUser;
     }
-
 };
-
-?>
