@@ -30,6 +30,12 @@ class TaskFilterForm extends Model {
     public $noResponse;
     public $period;
 
+    /**
+     * Gets Tasks
+     *
+     * @return \yii\db\ActiveQuery
+     */
+
     public function getTasks(): ActiveQuery
     {
         $tasks = Task::find()
@@ -38,6 +44,12 @@ class TaskFilterForm extends Model {
             ->orderBy(['creation' => SORT_DESC]);
         return $tasks;
     }
+
+    /**
+     * Apply period
+     *
+     * @return \yii\db\ActiveQuery
+     */
 
     private function applyPeriod($tasks): ActiveQuery
     {
@@ -56,6 +68,12 @@ class TaskFilterForm extends Model {
         };
 
     }
+
+    /**
+     * Apply Tasks
+     *
+     * @return \yii\db\ActiveQuery
+     */
 
     public function apply(): ActiveQuery
     {
