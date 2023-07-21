@@ -36,6 +36,11 @@ class ChangePasswordForm extends Model
         ];
     }
 
+    /**
+     * Validate Password
+     *
+     */
+
     public function validatePassword($attribute, $params)
     {
         if (!$this->hasErrors()) {
@@ -46,6 +51,10 @@ class ChangePasswordForm extends Model
         }
     }
 
+    /**
+     * Check Password
+     *
+     */
     public function checkPassword($attribute, $params)
     {
         if ($this->current_password === $this->new_password)
@@ -59,8 +68,10 @@ class ChangePasswordForm extends Model
         }
     }
 
-
-
+    /**
+     * Change Password
+     *
+     */
     public function changePassword()
     {
         $user = User::findOne(Yii::$app->user->getId());

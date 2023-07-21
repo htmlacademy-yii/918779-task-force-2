@@ -51,6 +51,7 @@ class RegistrationForm extends Model {
     }
 
     /**
+     * Registration
      *
      */
     public function registration()

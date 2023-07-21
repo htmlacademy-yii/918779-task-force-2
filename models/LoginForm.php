@@ -27,6 +27,11 @@ class LoginForm extends Model
         }
     }
 
+    /**
+     * Get User
+     *
+     */
+
     public function getUser()
     {
         if ($this->_user === null) {

@@ -67,6 +67,11 @@ class AddTaskForm extends Model {
         ];
     }
 
+    /**
+     * Add Task
+     *
+     */
+
     public function addTask()
     {
 
@@ -107,6 +112,11 @@ class AddTaskForm extends Model {
 
         return $task;
     }
+
+    /**
+     * Upload Files
+     *
+     */
 
     public function uploads($newTask)
     {

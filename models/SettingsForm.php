@@ -66,6 +66,11 @@ class SettingsForm extends Model {
         ];
     }
 
+    /**
+     * Edit Profile
+     *
+     */
+
     public function editProfile()
     {
 
@@ -128,6 +133,11 @@ class SettingsForm extends Model {
 
         return $user;
     }
+
+    /**
+     * Gets Specialization
+     *
+     */
 
     public function getSpecialization($newSpecialization)
     {

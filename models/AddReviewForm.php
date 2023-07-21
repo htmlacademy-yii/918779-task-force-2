@@ -42,6 +42,11 @@ class AddReviewForm extends Model {
         ];
     }
 
+    /**
+     * Add Review
+     *
+     */
+
     public function addReview($task_id)
     {
         $task = Task::findOne($task_id);

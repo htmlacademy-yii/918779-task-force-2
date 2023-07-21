@@ -40,6 +40,10 @@ class AddResponseForm extends Model {
         ];
     }
 
+    /**
+     * Add Response
+     *
+     */
     public function addResponse($task_id)
     {
         $response = new Response();
