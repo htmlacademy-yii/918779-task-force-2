@@ -10,15 +10,15 @@ $this->title = 'Регистрация';
     <div class="center-block">
         <div class="registration-form regular-form">
             <?php $form = ActiveForm::begin([
-                    'id' => 'registration-form',
+                    'id' => 'registration-form'
                 ]);
                 ?>
                     <h3 class="head-main head-task">Регистрация нового пользователя</h3>
-                    <?php echo $form->field($model, 'name', ['template' => "{label}\n{input}\n{error}", 'options' => ['class' => 'form-group'], 'labelOptions' => ['class' => 'control-label']])
+                    <?php echo $form->field($model, 'name', ['enableAjaxValidation' => true, 'template' => "{label}\n{input}\n{error}", 'options' => ['class' => 'form-group'], 'labelOptions' => ['class' => 'control-label']])
             ->textInput();
                     ?>
                     <div class="half-wrapper">
-                    <?php echo $form->field($model, 'email', ['template' => "{label}\n{input}\n{error}", 'options' => ['class' => 'form-group'], 'labelOptions' => ['class' => 'control-label'], 'errorOptions' => ['class' => 'help-block',]])
+                    <?php echo $form->field($model, 'email', ['enableAjaxValidation' => true, 'template' => "{label}\n{input}\n{error}", 'options' => ['class' => 'form-group'], 'labelOptions' => ['class' => 'control-label'], 'errorOptions' => ['class' => 'help-block',]])
             ->input('email');
                     ?>
                         <div class="form-group">
@@ -26,7 +26,7 @@ $this->title = 'Регистрация';
                         </div>
                     </div>
                     <div class="half-wrapper">
-                        <?php echo $form->field($model, 'password', ['template' => "{label}\n{input}\n{error}", 'options' => ['class' => 'form-group'], 'labelOptions' => ['class' => 'control-label']])
+                        <?php echo $form->field($model, 'password', ['enableAjaxValidation' => true, 'template' => "{label}\n{input}\n{error}", 'options' => ['class' => 'form-group'], 'labelOptions' => ['class' => 'control-label']])
                 ->passwordInput();
                         ?>
                     </div>

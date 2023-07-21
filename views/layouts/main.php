@@ -4,6 +4,7 @@ use app\assets\AppAsset;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\Menu;
+use Taskforce\Tasks;
 
 AppAsset::register($this);
 ?>
@@ -20,7 +21,7 @@ AppAsset::register($this);
 <body>
 <header class="page-header">
     <nav class="main-nav">
-        <a href='#' class="header-logo">
+        <a href='<?= Url::to(['/tasks']); ?>' class="header-logo">
             <img class="logo-image" src="/img/logotype.png" width=227 height=60 alt="taskforce">
         </a>
         <?php if(!Yii::$app->user->isGuest): ?>
@@ -29,8 +30,8 @@ AppAsset::register($this);
             'items' => [
                 ['label' => 'Новое', 'url' => ['tasks/index']],
                 ['label' => 'Мои задания', 'url' => ['tasks/my']],
-                ['label' => 'Создать задание', 'url' => ['tasks/add'], 'visible' => Yii::$app->user->identity->role === 'customer'],
-                ['label' => 'Настройки', 'url' => ['settings']],
+                ['label' => 'Создать задание', 'url' => ['tasks/add'], 'visible' => Yii::$app->user->identity->role === Tasks::CUSTOMER],
+                ['label' => 'Настройки', 'url' => ['user/settings']],
             ],
             'options' => ['class' => 'nav-list'],
             'itemOptions' => ['class' => 'list-item'],
@@ -43,8 +44,8 @@ AppAsset::register($this);
     </nav>
     <?php if(!Yii::$app->user->isGuest): ?>
     <div class="user-block">
-        <a href="#">
-            <img class="user-photo" src="/img/man-glasses.png" width="55" height="55" alt="Аватар">
+        <a href="<?= Url::to(['/user/view', 'id' => Yii::$app->user->getId()]); ?>">
+            <img class="user-photo" src="<?= Html::encode(Yii::$app->user->getIdentity()->avatar); ?>" width="55" height="55" alt="Аватар">
         </a>
         <div class="user-menu">
             <p class="user-name">
@@ -55,10 +56,7 @@ AppAsset::register($this);
             <div class="popup-head">
                 <ul class="popup-menu">
                     <li class="menu-item">
-                        <a href="#" class="link">Настройки</a>
-                    </li>
-                    <li class="menu-item">
-                        <a href="#" class="link">Связаться с нами</a>
+                        <a href="<?= Url::to(['user/settings']); ?>" class="link">Настройки</a>
                     </li>
                     <li class="menu-item">
                         <a href="<?= Url::to(['user/logout']) ?>" class="link">Выход из системы</a>

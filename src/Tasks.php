@@ -7,7 +7,9 @@ use Taskforce\Actions\CancelAction;
 use Taskforce\Actions\RespondAction;
 use Taskforce\Actions\DoneAction;
 use Taskforce\Actions\RefusedAction;
-use Yii;
+use app\models\Task;
+use yii\db\ActiveQuery;
+use yii;
 
 class Tasks
 {
@@ -17,8 +19,16 @@ class Tasks
     const STATUS_DONE = 'done';
     const STATUS_FAILED = 'failed';
 
+    const FILTER_NEW = 'new';
+    const FILTER_WORKING = 'working';
+    const FILTER_CLOSED = 'closed';
+    const FILTER_OVERDUE = 'overdue';
+
     public const CUSTOMER = 'customer';
     public const EXECUTOR = 'executor';
+
+    const USER_STATUS_FREE = 'free';
+    const USER_STATUS_BUSY = 'busy';
 
     private $status;
 
@@ -86,7 +96,8 @@ class Tasks
      *
      * @return array
      */
-    public static function getMapStatuses(): array {
+    public static function getMapStatuses(): array 
+    {
         return self::$mapStatuses;
     }
 
@@ -95,7 +106,8 @@ class Tasks
      *
      * @return array
      */
-    public static function getMapActions(): array {
+    public static function getMapActions(): array 
+    {
         return self::$mapActions;
     }
 
@@ -152,6 +164,6 @@ class Tasks
         }
 
         return $availableAction ?? null;
-    }
+    }    
 }
 ?>

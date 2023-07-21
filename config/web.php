@@ -6,6 +6,8 @@ $db = require __DIR__ . '/db.php';
 $config = [
     'id' => 'basic',
     'language' => 'ru-RU',
+    'defaultRoute' => 'landing/index',
+    'name' => 'Taskforce',
     'sourceLanguage' => 'ru-RU',
     'timeZone' => 'Europe/Moscow',
     'basePath' => dirname(__DIR__),
@@ -55,8 +57,12 @@ $config = [
                 '//' => '/',
                 'tasks' => 'tasks/index',
                 'tasks/view/<id:\d+>' => 'tasks/view',
+                'tasks/my/<filter:.+>' => 'tasks/my',
                 'user/view/<id:\d+>' => 'user/view',
+                'user/settings/<type:.+>' => 'user/settings',
                 'uploads/<id:.+>' => 'uploads',
+                'autocomplete/<location:.*>' => 'autocomplete',
+                'tasks/tasks?TaskFilterForm' => 'tasks/tasks'
             ],
         ],
 
@@ -66,8 +72,22 @@ $config = [
             'defaultTimeZone' => 'Europe/Moscow',
             'datetimeFormat' => 'php:j F, H:i',
             'sizeFormatBase' => 1000,
-            'numberFormatterOptions' => [\NumberFormatter::MIN_FRACTION_DIGITS => 0, \NumberFormatter::MAX_FRACTION_DIGITS => 0],
+            'decimalSeparator' => '.',
+            'numberFormatterOptions' => [\NumberFormatter::MIN_FRACTION_DIGITS => 0, \NumberFormatter::MAX_FRACTION_DIGITS => 2],
+            
         ],
+
+        'authClientCollection' => [
+            'class' => 'yii\authclient\Collection',
+            'clients' => [
+                'vkontakte' => [
+                    'class' => 'yii\authclient\clients\VKontakte',
+                    'clientId' => 51642800,
+                    'clientSecret' => 'o78DngkUM5SSXYLqRXwK',
+                    'scope' => 'email',
+                ],
+            ],
+        ]
     ],
     'params' => $params,
 ];

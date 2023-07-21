@@ -33,8 +33,8 @@ use yii\web\IdentityInterface;
  */
 class User extends ActiveRecord implements IdentityInterface
 {
-
-
+    const HIDE_CONTACTS = 'hide';
+    const SHOW_CONTACTS = 'show';
 
     /**
      * {@inheritdoc}
@@ -99,8 +99,8 @@ class User extends ActiveRecord implements IdentityInterface
         return [
             [['registration', 'birthday'], 'safe'],
             [['name', 'email', 'city_id', 'password'], 'required'],
-            [['info', 'role', 'token'], 'string'],
-            [['city_id'], 'integer'],
+            [['info', 'role'], 'string'],
+            [['city_id', 'token'], 'integer'],
             [['name', 'email'], 'string', 'max' => 128],
             [['avatar', 'password'], 'string', 'max' => 255],
             ['avatar', 'default', 'value' => 'img/avatars/1.png' ],
@@ -130,7 +130,7 @@ class User extends ActiveRecord implements IdentityInterface
             'info' => 'Info',
             'city_id' => 'Город',
             'role' => 'Role',
-            'token' => 'Token',
+            'token' => 'VK User ID',
             'password' => 'Пароль',
             'repeat_password' => 'Повтор пароля',
         ];
@@ -197,17 +197,72 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * Gets user statistics update.
+     * Gets user statistic.
      *
+     * @return array
+     */
+    public function getUserStats(): array
+    {
+        $totalReview = Review::find()->where(['user_id' => $this->id])->sum('stats');
+        $countReview = Review::find()->where('stats > 0')->andWhere(['user_id' => $this->id])->count('stats');
+        $countFailedTasks = Task::find()->where(['user_id' => $this->id, 'status' => Tasks::STATUS_FAILED])->count('id');
+        if (($countReview + $countFailedTasks) > 0)
+        {
+            $this->stats = $totalReview / ($countReview + $countFailedTasks);
+        }
+        else {
+            $this->stats = $totalReview; 
+        }
+        
+        $this->save();
+
+        $position = User::find()
+        ->select('ROW_NUMBER() OVER (ORDER BY stats DESC)')
+        ->indexBy('id')
+        ->column();
+
+        $userStats = [
+            'count' => $countReview,
+            'failed' => $countFailedTasks,
+            'position' => $position[$this->id]
+        ];
+
+        return $userStats;
+    }
+
+    /**
+     * Gets user age.
      *
+     * @return int
+     */
+    public function getUserAge(): int
+    {
+        $userAge = date_diff(date_create(date('Y-m-d')), date_create($this->birthday));
+
+        return $userAge->format('%y');
+    }
+
+        /**
+     * Gets user status.
+     *
+     * @return string
      */
 
-    public function updateStats()
+    public function getUserStatus(): string 
     {
-        $total = Review::find()->where(['user_id' => $this->id])->sum('stats');
-        $countCompletedTasks = Review::find()->where('stats > 0')->andFilterWhere(['user_id' => $this->id])->count('stats');
-        $countFailedTasks = Task::find()->where(['user_id' => $this->id, 'status' => Tasks::STATUS_FAILED])->count('id');
-        $totalStats = $total / ($countCompletedTasks + $countFailedTasks);
+        $userStatus = 'Открыт для новых заказов';
+        $this->status = Tasks::USER_STATUS_FREE;
+
+        $count = Task::find()->where(['user_id' => $this->id])->andWhere(['status' =>Tasks::STATUS_WORKING])->count();
+
+
+        if ($count > 0)
+        {
+            $this->status = Tasks::USER_STATUS_BUSY;
+            $userStatus = 'Занят';
+        }           
         $this->save();
+        
+        return $userStatus;
     }
 }

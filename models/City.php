@@ -4,6 +4,8 @@ namespace app\models;
 
 use Yii;
 
+use TaskForce\Exceptions\SourceFileException;
+
 /**
  * This is the model class for table "city".
  *

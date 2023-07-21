@@ -30,7 +30,8 @@ class TaskFilterForm extends Model {
     public $noResponse;
     public $period;
 
-    public function getTasks(): ActiveQuery {
+    public function getTasks(): ActiveQuery
+    {
         $tasks = Task::find()
             ->where(['status' => Task::STATUS_NEW])
             ->joinWith(['category', 'city', 'responses'])
@@ -56,7 +57,7 @@ class TaskFilterForm extends Model {
 
     }
 
-    public function apply(): array
+    public function apply(): ActiveQuery
     {
         $tasks = $this->getTasks();
 
@@ -72,7 +73,7 @@ class TaskFilterForm extends Model {
             $tasks = $this->applyPeriod($tasks);
         }
 
-        return $tasks->all();
+        return $tasks;
     }
 
     public function attributeLabels(): array {

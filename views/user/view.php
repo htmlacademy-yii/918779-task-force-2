@@ -1,6 +1,10 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
+use yii\widgets\ListView;
+use kartik\rating\StarRating;
+
 
 $this->title = 'Профиль пользователя';
 
@@ -10,82 +14,82 @@ $this->title = 'Профиль пользователя';
         <h3 class="head-main"><?= Html::encode($user->name); ?></h3>
         <div class="user-card">
             <div class="photo-rate">
-                <img class="card-photo" src="/img/man-glasses.png" width="191" height="190" alt="Фото пользователя">
+                <img class="card-photo" src="/<?= Html::encode(Yii::$app->user->getIdentity()->avatar); ?>" width="191" height="191" alt="Фото пользователя">
                 <div class="card-rate">
-                    <div class="stars-rating big"><span class="fill-star">&nbsp;</span><span class="fill-star">&nbsp;</span><span class="fill-star">&nbsp;</span><span class="fill-star">&nbsp;</span><span>&nbsp;</span></div>
-                    <span class="current-rate">4.23</span>
+                    <?php echo StarRating::widget([
+                        'name' => 'stars-rating-big',
+                        'value' => $user->stats,
+                        'pluginOptions' => [
+                            'filledStar' => '<img src="/img/star-fill.svg"></img>',
+                            'emptyStar' => '<img src="/img/star-empty.svg"></img>',
+                            'size' => 'sm',
+                            'step' => 0.1,
+                            'readonly' => true,
+                            'showClear' => false,
+                            'showCaption' => false,
+                        ],
+                    ]); ?>
+                    <span class="current-rate"><?= Html::encode($user->stats); ?></span>
                 </div>
             </div>
             <p class="user-description">
-                Внезапно, ключевые особенности структуры проекта
-                неоднозначны и будут подвергнуты целой серии
-                независимых исследований. Следует отметить, что
-                высококачественный прототип будущего проекта, в
-                своём классическом представлении, допускает
-                внедрение своевременного выполнения сверхзадачи.
+            <?= Html::encode($user->info); ?>
             </p>
         </div>
         <div class="specialization-bio">
             <div class="specialization">
                 <p class="head-info">Специализации</p>
                 <ul class="special-list">
-                    <li class="special-item">
-                        <a href="#" class="link link--regular">Ремонт бытовой техники</a>
-                    </li>
-                    <li class="special-item">
-                        <a href="#" class="link link--regular">Курьер</a>
-                    </li>
-                    <li class="special-item">
-                        <a href="#" class="link link--regular">Оператор ПК</a>
-                    </li>
+                    <?php foreach ($user->categories as $category) : ?>
+                        <li class="special-item">
+                            <a href="<?= Url::to(['tasks/', 'TaskFilterForm[categories][]' => $category->id]); ?>" class="link link--regular"><?= Html::encode($category->title); ?></a>
+                        </li>
+                    <?php endforeach; ?>                    
                 </ul>
             </div>
             <div class="bio">
                 <p class="head-info">Био</p>
-                <p class="bio-info"><span class="country-info">Россия</span>, <span class="town-info"><?= Html::encode($user->city->title); ?></span>, <span class="age-info">30</span> лет</p>
+                <p class="bio-info"><span class="country-info">Россия</span>, <span class="town-info"><?= Html::encode($user->city->title); ?></span>, <span class="age-info"><?= Html::encode($user->userAge);?></span> лет</p>
             </div>
         </div>
-        <h4 class="head-regular">Отзывы заказчиков</h4>
-        <div class="response-card">
-            <img class="customer-photo" src="/img/man-coat.png" width="120" height="127" alt="Фото заказчика">
-            <div class="feedback-wrapper">
-                <p class="feedback">«Кумар сделал всё в лучшем виде. Буду обращаться к нему в
-                    будущем, если возникнет такая необходимость!»</p>
-                <p class="task">Задание «<a href="#" class="link link--small">Повесить полочку</a>» выполнено</p>
-            </div>
-            <div class="feedback-wrapper">
-                <div class="stars-rating small"><span class="fill-star">&nbsp;</span><span class="fill-star">&nbsp;</span><span class="fill-star">&nbsp;</span><span class="fill-star">&nbsp;</span><span>&nbsp;</span></div>
-                <p class="info-text"><span class="current-time">25 минут </span>назад</p>
-            </div>
-        </div>
+        <?php
+            echo ListView::widget([
+                'dataProvider' => $reviews,
+                'itemView' => 'reviewsList',
+                'layout' =>  '<h4 class="head-regular">Отзывы заказчиков</h4>{items}',
+                'emptyText' => false,
+            ]);
+        ?>
     </div>
     <div class="right-column">
         <div class="right-card black">
             <h4 class="head-card">Статистика исполнителя</h4>
             <dl class="black-list">
                     <dt>Всего заказов</dt>
-                    <dd>4 выполнено, 0 провалено</dd>
+                    <dd><?= Html::encode($user->userStats['count']); ?> выполнено, <?= Html::encode($user->userStats['failed']); ?> провалено</dd>
                     <dt>Место в рейтинге</dt>
-                    <dd>25 место</dd>
+                    <dd><?= Html::encode($user->userStats['position']); ?> место</dd>
                     <dt>Дата регистрации</dt>
                     <dd><?= Yii::$app->formatter->asDatetime($user->registration); ?></dd>
                     <dt>Статус</dt>
-                    <dd>Открыт для новых заказов</dd>
+                    <dd><?= Html::encode($user->userStatus); ?></dd>
             </dl>
         </div>
+        <?php if (Yii::$app->user->getIdentity()->contacts !== 'hide') : ?>
         <div class="right-card white">
             <h4 class="head-card">Контакты</h4>
             <ul class="enumeration-list">
                 <li class="enumeration-item">
-                    <a href="#" class="link link--block link--phone"><?= Html::encode($user->phone); ?></a>
+                    <a href="tel:<?= Html::encode($user->phone); ?>" class="link link--block link--phone"><?= Html::encode($user->phone); ?></a>
                 </li>
                 <li class="enumeration-item">
-                    <a href="#" class="link link--block link--email"><?= Html::encode($user->email); ?></a>
+                    <a href="mailto:<?= Html::encode($user->email); ?>" class="link link--block link--email"><?= Html::encode($user->email); ?></a>
                 </li>
                 <li class="enumeration-item">
-                    <a href="#" class="link link--block link--tg"><?= Html::encode($user->telegram); ?></a>
+                    <a href="https://t.me/<?= Html::encode($user->telegram); ?>" class="link link--block link--tg"><?= Html::encode($user->telegram); ?></a>
                 </li>
             </ul>
         </div>
+        <?php endif; ?>
     </div>
 </main>

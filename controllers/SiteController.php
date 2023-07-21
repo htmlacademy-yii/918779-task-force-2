@@ -8,7 +8,9 @@ use yii\web\Controller;
 use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
-use app\models\ContactForm;
+use app\models\User;
+use app\models\Auth;
+use yii\authclient\clients\VKontakte;
 
 class SiteController extends Controller
 {
@@ -25,8 +27,12 @@ class SiteController extends Controller
                 'class' => 'yii\captcha\CaptchaAction',
                 'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
             ],
+            'auth' => [
+                'class' => 'yii\authclient\AuthAction',
+                'successCallback' => [$this, 'onAuthSuccess'],
+            ],
         ];
-    }
+    }    
 
     /**
      * Displays homepage.
@@ -60,30 +66,65 @@ class SiteController extends Controller
     }
 
     /**
-     * Displays contact page.
-     *
-     * @return Response|string
-     */
-    public function actionContact()
-    {
-        $model = new ContactForm();
-        if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
-            Yii::$app->session->setFlash('contactFormSubmitted');
-
-            return $this->refresh();
-        }
-        return $this->render('contact', [
-            'model' => $model,
-        ]);
-    }
-
-    /**
-     * Displays about page.
+     * Auth action.
      *
      * @return string
      */
-    public function actionAbout()
+
+    public function onAuthSuccess($client) 
     {
-        return $this->render('about');
+        $attributes = $client->getUserAttributes();
+      
+        /* @var $auth Auth */
+        $auth = Auth::find()->where([
+        'source' => $client->getId(),
+        'source_id' => $attributes['id'],
+        ])->one();
+
+        if (Yii::$app->user->isGuest) {
+            if ($auth) { // Авторизация
+                $user = $auth->user;
+                Yii::$app->user->login($user);
+                $this->redirect('/tasks');
+            } else { // регистрация
+                if (isset($attributes['email']) && User::find()->where(['email' => $attributes['email']])->exists()) {
+                    Yii::$app->getSession()->setFlash('error', [
+                        Yii::t('app', "Пользователь с такой электронной почтой как в {client} уже существует, но с ним не связан. Для начала войдите на сайт использую электронную почту, для того, что бы связать её.", ['client' => $client->getTitle()]),
+                    ]);
+                } else { 
+                    $password = Yii::$app->security->generateRandomString(6);
+                    $user = new User();
+                    if (isset($attributes['first_name'], $attributes['last_name'])) {
+                        $user->name = implode(' ', array($attributes['first_name'], $attributes['last_name']));
+                    }
+                    if (isset($attributes['email'])) {
+                        $user->email = $attributes['email'];
+                    } else {
+                        $user->email = $attributes['id'] . '@taskforce.com';
+                    }
+                    $user->password = Yii::$app->security->generatePasswordHash($password);
+                    $user->role = 'customer';
+                    $user->city_id = $attributes['city']['id'];
+                    $user->avatar = $attributes['photo'];
+                    $user->contacts = User::SHOW_CONTACTS;
+                    $user->token = $attributes['id'];
+                    $birthdayDate = \DateTime::createFromFormat('d.m.Y', $attributes['bdate']);
+                    $user->birthday = $birthdayDate ? $birthdayDate->format('Y-m-d') : '2000-01-01';
+                
+                    if ($user->save()) {
+                        $auth = new Auth([
+                            'user_id' => $user->id,
+                            'source' => $client->getId(),
+                            'source_id' => $attributes['id'],
+                            ]);
+
+                        if ($auth->save()) {
+                            Yii::$app->user->login($user);
+                            $this->redirect('/tasks');
+                        }
+                    }
+                }
+            }
+        }
     }
 }

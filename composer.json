@@ -22,12 +22,15 @@
         "php": ">=5.6.0",
         "yiisoft/yii2": "~2.0.45",
         "yiisoft/yii2-bootstrap5": "~2.0",
-        "kartik-v/yii2-widget-rating": "dev-master"
+        "kartik-v/yii2-widget-rating": "dev-master",
+        "guzzlehttp/guzzle": "^7.5.1",
+        "squizlabs/php_codesniffer": "*"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",
         "yiisoft/yii2-gii": "~2.2.0",
         "yiisoft/yii2-faker": "~2.0.0",
+        "yiisoft/yii2-authclient": "~2.2.0",
         "codeception/codeception": "^4.0",
         "codeception/verify": "~0.5.0 || ~1.1.0",
         "codeception/specify": "~0.4.6",
