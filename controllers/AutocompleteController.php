@@ -45,11 +45,14 @@ class AutocompleteController extends Controller
             foreach ($options as $value)
             {
                 $coordinates = explode(' ', ArrayHelper::getValue($value, $geocoder_coordinates_key));
+                $address = explode(',', ArrayHelper::getValue($value, $geocoder_city_key));
+
                 $result[] =
                 [
                     'location' => ArrayHelper::getValue($value, $geocoder_address_key),
-                    'lat' => $coordinates[0],
-                    'lng' => $coordinates[1],
+                    'city' => $address[0],
+                    'lng' => $coordinates[0],
+                    'lat' => $coordinates[1],
                 ];
             }
         }
@@ -60,7 +63,7 @@ class AutocompleteController extends Controller
         }
 
         return $result;
-    }
+    }   
 
     public function actionIndex($location)
     {

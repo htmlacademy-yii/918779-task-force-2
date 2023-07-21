@@ -78,7 +78,8 @@ class AddTaskForm extends Model {
         $task->estimate = $this->estimate;
         $task->runtime = $this->runtime;
         $task->status = Task::STATUS_NEW;
-        $task->city_id = 1;
+        $task->city_id = City::findOne(['title' => $this->city])->id ?? 1001;
+        $task->city = $this->city;
         if ($this->lat && $this->lng)
         {
             $task->lat = $this->lat;

@@ -99,8 +99,8 @@ class User extends ActiveRecord implements IdentityInterface
         return [
             [['registration', 'birthday'], 'safe'],
             [['name', 'email', 'city_id', 'password'], 'required'],
-            [['info', 'role', 'token'], 'string'],
-            [['city_id'], 'integer'],
+            [['info', 'role'], 'string'],
+            [['city_id', 'token'], 'integer'],
             [['name', 'email'], 'string', 'max' => 128],
             [['avatar', 'password'], 'string', 'max' => 255],
             ['avatar', 'default', 'value' => 'img/avatars/1.png' ],
@@ -130,7 +130,7 @@ class User extends ActiveRecord implements IdentityInterface
             'info' => 'Info',
             'city_id' => 'Город',
             'role' => 'Role',
-            'token' => 'Token',
+            'token' => 'VK User ID',
             'password' => 'Пароль',
             'repeat_password' => 'Повтор пароля',
         ];
@@ -206,7 +206,14 @@ class User extends ActiveRecord implements IdentityInterface
         $totalReview = Review::find()->where(['user_id' => $this->id])->sum('stats');
         $countReview = Review::find()->where('stats > 0')->andWhere(['user_id' => $this->id])->count('stats');
         $countFailedTasks = Task::find()->where(['user_id' => $this->id, 'status' => Tasks::STATUS_FAILED])->count('id');
-        $this->stats = $totalReview / ($countReview + $countFailedTasks);
+        if (($countReview + $countFailedTasks) > 0)
+        {
+            $this->stats = $totalReview / ($countReview + $countFailedTasks);
+        }
+        else {
+            $this->stats = $totalReview; 
+        }
+        
         $this->save();
 
         $position = User::find()
@@ -243,21 +250,18 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function getUserStatus(): string 
     {
-        
-        if (Yii::$app->user->identity->role === Tasks::EXECUTOR) 
-        {
-            $count = Task::find()->where(['user_id' => $this->id])->andWhere(['status' =>Tasks::STATUS_WORKING])->count();
-            $this->status = Tasks::USER_STATUS_FREE;
-            $userStatus = 'Открыт для новых заказов';
+        $userStatus = 'Открыт для новых заказов';
+        $this->status = Tasks::USER_STATUS_FREE;
 
-            if ($count > 0)
-            {
-                $this->status = Tasks::USER_STATUS_BUSY;
-                $userStatus = 'Занят';
-            }           
-            
-            $this->save();
-        }
+        $count = Task::find()->where(['user_id' => $this->id])->andWhere(['status' =>Tasks::STATUS_WORKING])->count();
+
+
+        if ($count > 0)
+        {
+            $this->status = Tasks::USER_STATUS_BUSY;
+            $userStatus = 'Занят';
+        }           
+        $this->save();
         
         return $userStatus;
     }

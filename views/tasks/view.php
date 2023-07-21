@@ -31,8 +31,12 @@ $this->title = 'Просмотр задания';
             <div class="map" id="map" style="width: 725px; height: 346px"></div>
             <input id="lat" type="hidden" value="<?= HTML::encode($task->lat); ?>">
             <input id="lng" type="hidden" value="<?= HTML::encode($task->lng); ?>">
-            <p class="map-address town"><?= HTML::encode($task->city); ?></p>
-            <p class="map-address"><?= HTML::encode($task->location); ?></p>
+            <?php if ($task->city_id !== 1001): ?>
+                <p class="map-address town"><?= HTML::encode($task->city); ?></p>
+                <p class="map-address"><?= HTML::encode($task->location); ?></p>
+            <?php else: ?>
+                <p class="map-address">Удаленная работа</p>                
+            <?php endif; ?>
         </div>
 
         <?php

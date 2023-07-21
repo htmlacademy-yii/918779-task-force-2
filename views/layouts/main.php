@@ -45,7 +45,7 @@ AppAsset::register($this);
     <?php if(!Yii::$app->user->isGuest): ?>
     <div class="user-block">
         <a href="<?= Url::to(['/user/view', 'id' => Yii::$app->user->getId()]); ?>">
-            <img class="user-photo" src="/<?= Html::encode(Yii::$app->user->getIdentity()->avatar); ?>" width="55" height="55" alt="Аватар">
+            <img class="user-photo" src="<?= Html::encode(Yii::$app->user->getIdentity()->avatar); ?>" width="55" height="55" alt="Аватар">
         </a>
         <div class="user-menu">
             <p class="user-name">
@@ -57,9 +57,6 @@ AppAsset::register($this);
                 <ul class="popup-menu">
                     <li class="menu-item">
                         <a href="<?= Url::to(['user/settings']); ?>" class="link">Настройки</a>
-                    </li>
-                    <li class="menu-item">
-                        <a href="user/contacts" class="link">Связаться с нами</a>
                     </li>
                     <li class="menu-item">
                         <a href="<?= Url::to(['user/logout']) ?>" class="link">Выход из системы</a>

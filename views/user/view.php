@@ -2,7 +2,9 @@
 
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\widgets\ListView;
 use kartik\rating\StarRating;
+
 
 $this->title = 'Профиль пользователя';
 
@@ -50,19 +52,14 @@ $this->title = 'Профиль пользователя';
                 <p class="bio-info"><span class="country-info">Россия</span>, <span class="town-info"><?= Html::encode($user->city->title); ?></span>, <span class="age-info"><?= Html::encode($user->userAge);?></span> лет</p>
             </div>
         </div>
-        <h4 class="head-regular">Отзывы заказчиков</h4>
-        <div class="response-card">
-            <img class="customer-photo" src="/img/man-coat.png" width="120" height="127" alt="Фото заказчика">
-            <div class="feedback-wrapper">
-                <p class="feedback">«Кумар сделал всё в лучшем виде. Буду обращаться к нему в
-                    будущем, если возникнет такая необходимость!»</p>
-                <p class="task">Задание «<a href="#" class="link link--small">Повесить полочку</a>» выполнено</p>
-            </div>
-            <div class="feedback-wrapper">
-                <div class="stars-rating small"><span class="fill-star">&nbsp;</span><span class="fill-star">&nbsp;</span><span class="fill-star">&nbsp;</span><span class="fill-star">&nbsp;</span><span>&nbsp;</span></div>
-                <p class="info-text"><span class="current-time">25 минут </span>назад</p>
-            </div>
-        </div>
+        <?php
+            echo ListView::widget([
+                'dataProvider' => $reviews,
+                'itemView' => 'reviewsList',
+                'layout' =>  '<h4 class="head-regular">Отзывы заказчиков</h4>{items}',
+                'emptyText' => false,
+            ]);
+        ?>
     </div>
     <div class="right-column">
         <div class="right-card black">

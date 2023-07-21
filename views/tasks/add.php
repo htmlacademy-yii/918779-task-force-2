@@ -6,7 +6,7 @@ use yii\widgets\ActiveForm;
 
 $this->registerCssFile('https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.7/dist/css/autoComplete.02.min.css');
 $this->registerJsFile('https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.7/dist/autoComplete.min.js', ['position' => \yii\web\View::POS_HEAD]);
-$this->registerJsFile('../../js/autoComplete.js');
+$this->registerJsFile('/js/autoComplete.js');
 
 $this->title = 'Создание задания';
 
@@ -15,7 +15,7 @@ $this->title = 'Создание задания';
 <main class="main-content main-content--center container">
     <div class="add-task-form regular-form">
         <?php $form = ActiveForm::begin([
-            'id' => 'add-task-form',
+            'id' => 'add-task',
         ]);
         ?>
             <h3 class="head-main head-main">Публикация нового задания</h3>

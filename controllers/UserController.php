@@ -6,8 +6,10 @@ use Yii;
 use yii\web\Controller;
 use app\models\User;
 use app\models\Task;
+use Taskforce\Tasks;
 use app\models\Category;
 use app\models\Response;
+use app\models\Review;
 use app\models\TaskFilterForm;
 use app\models\City;
 use app\models\SettingsForm;
@@ -18,6 +20,7 @@ use yii\authclient\clients\VKontakte;
 use yii\db\Expression;
 use yii\filters\AccessControl;
 use yii\web\NotFoundHttpException;
+use yii\data\ActiveDataProvider;
 
 class UserController extends Controller
 {
@@ -40,13 +43,23 @@ class UserController extends Controller
 
     public function actionView($id)
     {
+
+        $idCurrent = Yii::$app->user->getId(); //36
         $user = User::findOne($id);
         if (!$user) {
             throw new NotFoundHttpException("Пользователь с ID $id не найден");
         }
 
+        $reviews = new ActiveDataProvider([
+            'query' => Review::find()
+                ->where(['review.user_id' => $id])
+                ->joinWith(['user', 'task']),
+            'sort' => ['defaultOrder' => ['id' => SORT_DESC]]
+        ]);
+
         return $this->render('view', [
             'user' => $user,
+            'reviews' => $reviews
             ]);
     }
 

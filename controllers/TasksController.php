@@ -45,23 +45,24 @@ class TasksController extends AccessController {
 
         $filter = new TaskFilterForm();
 
-        $query = $filter->getTasks();
-        $pagination = new Pagination(['totalCount' => $query->count(), 'pageSize' => 5]);
-        $pagination->pageSizeParam = false;
-        $pagination->forcePageParam = false;
-        $tasks = $query->offset($pagination->offset)
-        ->limit(5)
-        ->all();
+        $tasks = $filter->getTasks();
 
         $categories = Category::find()->all();
 
-        if (Yii::$app->request->getIspost()) {
-            $filter->load(Yii::$app->request->post());
+        if (Yii::$app->request->getIsget()) {
+            $filter->load(Yii::$app->request->get());
 
             if ($filter->validate()) {
                 $tasks = $filter->apply();
             }
         }
+
+        $pagination = new Pagination(['totalCount' => $tasks->count(), 'pageSize' => 5]);
+        $pagination->pageSizeParam = false;
+        $pagination->forcePageParam = false;
+        $tasks = $tasks->offset($pagination->offset)
+        ->limit(5)
+        ->all();
 
         return $this->render('index', [
             'tasks' => $tasks,
@@ -214,9 +215,11 @@ class TasksController extends AccessController {
                 if($form->location && !$form->lat && !$form->lng)
                 {
                     $addresses = AutocompleteController::getGeocoder($form->location);
+
                     $form->lat = $addresses[0]['lat'];
                     $form->lng = $addresses[0]['lng'];
                     $form->location = $addresses[0]['location'];
+                    $form->city = $addresses[0]['city'];
                 }
                 $newTask = $form->addTask();
                 return $this->redirect(['tasks/view', 'id' => $newTask->id]);
@@ -243,9 +246,16 @@ class TasksController extends AccessController {
                 'working' => Tasks::STATUS_WORKING,
                 'closed' => [Tasks::STATUS_CANCELED, Tasks::STATUS_DONE, Tasks::STATUS_FAILED],
             ];
+        
+            $tasks = Task::find()
+            ->where(['task.user_id' => $idCurrent, 'task.status' => $statusFilters[$filter]])
+            ->joinWith(['category', 'city', 'responses'])
+            ->all();
+        
         }
 
-        if (Yii::$app->user->identity->role === Tasks::EXECUTOR) {
+        if (Yii::$app->user->identity->role === Tasks::EXECUTOR) 
+        {
 
             $filter = !empty(Yii::$app->request->get('filter')) ? Yii::$app->request->get('filter') : Tasks::FILTER_WORKING;
 
@@ -254,12 +264,12 @@ class TasksController extends AccessController {
                 'overdue' => Tasks::STATUS_WORKING,
                 'closed' => [Tasks::STATUS_DONE, Tasks::STATUS_FAILED],
             ];
-        }
 
-        $tasks = Task::find()
-        ->where(['task.user_id' => $idCurrent, 'task.status' => $statusFilters[$filter]])
-        ->joinWith(['category', 'city', 'responses'])
-        ->all();
+            $tasks = Task::find()
+            ->where(['response.user_id' => $idCurrent, 'task.status' => $statusFilters[$filter]])
+            ->joinWith(['category', 'city', 'responses'])
+            ->all();
+        }
 
         if ($filter === Tasks::FILTER_OVERDUE) {
             $tasks = Task::find()

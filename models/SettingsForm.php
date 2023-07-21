@@ -37,9 +37,7 @@ class SettingsForm extends Model {
             [['name', 'email' ], 'required'],
             [['name'], 'string', 'max' => 255],
             [['email'], 'email'],
-            [['email'], 'unique', 'targetClass' => User::class],
-            ['phone', 'string', 'max' => 11],
-            ['phone', 'match', 'pattern' => '/^\d+$/'],
+            [['phone'], 'match', 'pattern' => '/^\d{11}$/', 'message' => 'Номер телефона должен состоять из 11 цифр'],
             ['birthday', 'date', 'format' => 'php:Y-m-d'],
             ['birthday', 'compare', 'compareValue' => date('Y-m-d'), 'operator' => '<', 'type' => 'date'],
             [['avatar'], 'file', 'extensions' => 'gif, png, jpg'],
@@ -68,49 +66,47 @@ class SettingsForm extends Model {
         ];
     }
 
-       public function editProfile()
+    public function editProfile()
     {
+
+       if (!$this->validate()) 
+       {
+         return false;
+       }
+
         $user = User::findOne(Yii::$app->user->getId());
-        if ($this->name) 
-        {
-            $user->name = $this->name;  
+
+        if (!$user) {
+            return false;
         }
 
-        if ($this->email) 
-        {
-            $user->email = $this->email;  
+        $user->name = $this->name;  
+        $user->email = $this->email;  
+        if ($this->birthday) {
+            $user->birthday = $this->birthday; 
         }
+        if ($this->phone)
+        {
+            $user->phone = $this->phone;  
+        }
+        if ($this->telegram)
+        {
+            $user->telegram = $this->telegram;  
+        }
+
+        if ($this->info)
+        {
+            $user->info = $this->info;    
+        }        
         
-        if ($this->birthday) 
-        {
-            $user->birthday = $this->birthday;  
-        }
+        $this->avatar = UploadedFile::getInstance($this, 'avatar');
         
-        if ($this->phone) 
+        if ($this->avatar)
         {
-            $user->phone = $this->phone;   
-        }
-
-        if ($this->telegram) 
-        {
-            $user->telegram = $this->telegram;   
-        }
-
-        if ($this->info) 
-        {
-            $user->info = $this->info;     
-        }  
-       
-        if ($this->avatar) 
-        { 
-            $this->avatar = UploadedFile::getInstance($this, 'avatar');
-            if ($this->validate()) 
-            {
-                $newname = uniqid('avatar') . '.' . $this->avatar->getExtension();
-                $this->avatar->saveAs('@webroot/uploads/avatars/' . $newname);
+            $newname = uniqid('avatar') . '.' . $this->avatar->getExtension();
+            $this->avatar->saveAs('@webroot/uploads/avatars/' . $newname);
                 $user->avatar = 'uploads/avatars/' . $newname;
-            }   
-        }
+        }  
 
         $transaction = \Yii::$app->db->beginTransaction();
         try {

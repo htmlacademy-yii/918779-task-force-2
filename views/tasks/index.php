@@ -32,8 +32,8 @@
             </p>
             <div class="footer-task">
                 <p class="info-text town-text">
-                    <?php if (isset($task->city->title)): ?>
-                        <?= Html::encode($task->city->title); ?>
+                    <?php if ($task->city_id !== 1001): ?>
+                        <?= Html::encode($task->location); ?>
                     <?php else: ?>
                         Удаленная работа
                     <?php endif; ?>
@@ -43,8 +43,6 @@
             </div>
         </div>
         <?php endforeach; ?>
-
-
 
         <div class="pagination-wrapper">
             <?php echo LinkPager::widget([
@@ -65,7 +63,7 @@
         <div class="right-card black">
             <div class="search-form">
             <?php $form = ActiveForm::begin([
-                'method' => 'post',
+                'method' => 'get',
                 'id' => 'search-form',
             ]);
             ?>

@@ -44,19 +44,17 @@ class AddReviewForm extends Model {
 
     public function addReview($task_id)
     {
+        $task = Task::findOne($task_id);
+        $response = Response::findOne(['task_id' => $task_id, 'position' => 'accepted']);
+
         $review = new Review();
-        $review->user_id = Yii::$app->user->getId();
         $review->task_id = $task_id;
         $review->stats = $this->stats;
         $review->comment = $this->comment;
-
-        $task = Task::findOne($task_id);
-        $task->status = Tasks::STATUS_DONE;
+        $review->user_id = $response->user_id;
+        $task->status = Tasks::STATUS_DONE;        
 
         $review->save();
         $task->save();
-
-        $user = User::findOne($task->user_id);
-        $user->updateStats();
     }
 }

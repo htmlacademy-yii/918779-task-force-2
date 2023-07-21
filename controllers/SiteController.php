@@ -102,9 +102,14 @@ class SiteController extends Controller
                     } else {
                         $user->email = $attributes['id'] . '@taskforce.com';
                     }
-                    $user->password = $password;
+                    $user->password = Yii::$app->security->generatePasswordHash($password);
                     $user->role = 'customer';
                     $user->city_id = $attributes['city']['id'];
+                    $user->avatar = $attributes['photo'];
+                    $user->contacts = User::SHOW_CONTACTS;
+                    $user->token = $attributes['id'];
+                    $birthdayDate = \DateTime::createFromFormat('d.m.Y', $attributes['bdate']);
+                    $user->birthday = $birthdayDate ? $birthdayDate->format('Y-m-d') : '2000-01-01';
                 
                     if ($user->save()) {
                         $auth = new Auth([

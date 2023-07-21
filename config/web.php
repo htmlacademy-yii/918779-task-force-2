@@ -61,7 +61,8 @@ $config = [
                 'user/view/<id:\d+>' => 'user/view',
                 'user/settings/<type:.+>' => 'user/settings',
                 'uploads/<id:.+>' => 'uploads',
-                'autocomplete/<location:.*>' => 'autocomplete'
+                'autocomplete/<location:.*>' => 'autocomplete',
+                'tasks/tasks?TaskFilterForm' => 'tasks/tasks'
             ],
         ],
 
