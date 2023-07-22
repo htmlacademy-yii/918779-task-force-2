@@ -32,7 +32,7 @@ class SiteController extends Controller
                 'successCallback' => [$this, 'onAuthSuccess'],
             ],
         ];
-    }    
+    }
 
     /**
      * Displays homepage.
@@ -71,10 +71,10 @@ class SiteController extends Controller
      * @return string
      */
 
-    public function onAuthSuccess($client) 
+    public function onAuthSuccess($client)
     {
         $attributes = $client->getUserAttributes();
-      
+
         /* @var $auth Auth */
         $auth = Auth::find()->where([
         'source' => $client->getId(),
@@ -89,9 +89,11 @@ class SiteController extends Controller
             } else { // регистрация
                 if (isset($attributes['email']) && User::find()->where(['email' => $attributes['email']])->exists()) {
                     Yii::$app->getSession()->setFlash('error', [
-                        Yii::t('app', "Пользователь с такой электронной почтой как в {client} уже существует, но с ним не связан. Для начала войдите на сайт использую электронную почту, для того, что бы связать её.", ['client' => $client->getTitle()]),
+                        Yii::t('app', "Пользователь с такой электронной почтой как в {client} уже существует,
+                        но с ним не связан. Для начала войдите на сайт использую электронную почту для того,
+                        чтобы связать её.", ['client' => $client->getTitle()]),
                     ]);
-                } else { 
+                } else {
                     $password = Yii::$app->security->generateRandomString(6);
                     $user = new User();
                     if (isset($attributes['first_name'], $attributes['last_name'])) {
@@ -110,7 +112,7 @@ class SiteController extends Controller
                     $user->token = $attributes['id'];
                     $birthdayDate = \DateTime::createFromFormat('d.m.Y', $attributes['bdate']);
                     $user->birthday = $birthdayDate ? $birthdayDate->format('Y-m-d') : '2000-01-01';
-                
+
                     if ($user->save()) {
                         $auth = new Auth([
                             'user_id' => $user->id,

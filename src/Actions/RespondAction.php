@@ -6,8 +6,8 @@ use Yii;
 use Taskforce\Tasks;
 use app\models\Response;
 
-class RespondAction extends DefaultAction {
-
+class RespondAction extends DefaultAction
+{
     public const ACTION_RESPOND = 'respond';
     public const ACTION_CLASS = 'button button--blue action-btn';
     public const ACTION_DATA = 'act_response';
@@ -17,12 +17,12 @@ class RespondAction extends DefaultAction {
      *
      * @return string
      */
-    public function getInternalName():string
+    public function getInternalName(): string
     {
         return self::ACTION_RESPOND;
     }
 
-    public function getTitle():string
+    public function getTitle(): string
     {
         return 'Откликнуться на задание';
     }
@@ -42,7 +42,7 @@ class RespondAction extends DefaultAction {
      *
      * @return string
      */
-    public function getData():string
+    public function getData(): string
     {
         return self::ACTION_DATA;
     }
@@ -56,7 +56,4 @@ class RespondAction extends DefaultAction {
     {
         return $this->idExecutor !== $idUser || Yii::$app->user->identity->role === Tasks::EXECUTOR;
     }
-
 };
-
-?>

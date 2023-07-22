@@ -18,10 +18,9 @@ use Yii;
  */
 class Response extends \yii\db\ActiveRecord
 {
-
-    const POSITION_CONSIDERED = 'considered';
-    const POSITION_ACCEPTED = 'accepted';
-    const POSITION_REFUSED = 'refused';
+    public const POSITION_CONSIDERED = 'considered';
+    public const POSITION_ACCEPTED = 'accepted';
+    public const POSITION_REFUSED = 'refused';
 
     /**
      * {@inheritdoc}
@@ -40,8 +39,10 @@ class Response extends \yii\db\ActiveRecord
             [['task_id', 'user_id', 'price'], 'required'],
             [['task_id', 'user_id', 'price'], 'integer'],
             [['comment'], 'string'],
-            [['task_id'], 'exist', 'skipOnError' => true, 'targetClass' => Task::className(), 'targetAttribute' => ['task_id' => 'id']],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
+            [['task_id'], 'exist', 'skipOnError' => true,
+            'targetClass' => Task::className(), 'targetAttribute' => ['task_id' => 'id']],
+            [['user_id'], 'exist', 'skipOnError' => true,
+            'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
 

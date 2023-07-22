@@ -5,7 +5,6 @@ use yii\helpers\Url;
 use yii\widgets\ListView;
 use kartik\rating\StarRating;
 
-
 $this->title = 'Профиль пользователя';
 
 ?>
@@ -14,7 +13,8 @@ $this->title = 'Профиль пользователя';
         <h3 class="head-main"><?= Html::encode($user->name); ?></h3>
         <div class="user-card">
             <div class="photo-rate">
-                <img class="card-photo" src="/<?= Html::encode(Yii::$app->user->getIdentity()->avatar); ?>" width="191" height="191" alt="Фото пользователя">
+                <img class="card-photo" src="/<?= Html::encode(Yii::$app->user->getIdentity()->avatar); ?>"
+                width="191" height="191" alt="Фото пользователя">
                 <div class="card-rate">
                     <?php echo StarRating::widget([
                         'name' => 'stars-rating-big',
@@ -42,14 +42,17 @@ $this->title = 'Профиль пользователя';
                 <ul class="special-list">
                     <?php foreach ($user->categories as $category) : ?>
                         <li class="special-item">
-                            <a href="<?= Url::to(['tasks/', 'TaskFilterForm[categories][]' => $category->id]); ?>" class="link link--regular"><?= Html::encode($category->title); ?></a>
+                            <a href="<?= Url::to(['tasks/', 'TaskFilterForm[categories][]' => $category->id]); ?>"
+                            class="link link--regular"><?= Html::encode($category->title); ?></a>
                         </li>
                     <?php endforeach; ?>                    
                 </ul>
             </div>
             <div class="bio">
                 <p class="head-info">Био</p>
-                <p class="bio-info"><span class="country-info">Россия</span>, <span class="town-info"><?= Html::encode($user->city->title); ?></span>, <span class="age-info"><?= Html::encode($user->userAge);?></span> лет</p>
+                <p class="bio-info"><span class="country-info">Россия</span>, 
+                <span class="town-info"><?= Html::encode($user->city->title); ?></span>,
+                <span class="age-info"><?= Html::encode($user->userAge);?></span> лет</p>
             </div>
         </div>
         <?php
@@ -59,14 +62,15 @@ $this->title = 'Профиль пользователя';
                 'layout' =>  '<h4 class="head-regular">Отзывы заказчиков</h4>{items}',
                 'emptyText' => false,
             ]);
-        ?>
+            ?>
     </div>
     <div class="right-column">
         <div class="right-card black">
             <h4 class="head-card">Статистика исполнителя</h4>
             <dl class="black-list">
                     <dt>Всего заказов</dt>
-                    <dd><?= Html::encode($user->userStats['count']); ?> выполнено, <?= Html::encode($user->userStats['failed']); ?> провалено</dd>
+                    <dd><?= Html::encode($user->userStats['count']); ?> выполнено, 
+                    <?= Html::encode($user->userStats['failed']); ?> провалено</dd>
                     <dt>Место в рейтинге</dt>
                     <dd><?= Html::encode($user->userStats['position']); ?> место</dd>
                     <dt>Дата регистрации</dt>
@@ -80,13 +84,16 @@ $this->title = 'Профиль пользователя';
             <h4 class="head-card">Контакты</h4>
             <ul class="enumeration-list">
                 <li class="enumeration-item">
-                    <a href="tel:<?= Html::encode($user->phone); ?>" class="link link--block link--phone"><?= Html::encode($user->phone); ?></a>
+                    <a href="tel:<?= Html::encode($user->phone); ?>" 
+                    class="link link--block link--phone"><?= Html::encode($user->phone); ?></a>
                 </li>
                 <li class="enumeration-item">
-                    <a href="mailto:<?= Html::encode($user->email); ?>" class="link link--block link--email"><?= Html::encode($user->email); ?></a>
+                    <a href="mailto:<?= Html::encode($user->email); ?>" 
+                    class="link link--block link--email"><?= Html::encode($user->email); ?></a>
                 </li>
                 <li class="enumeration-item">
-                    <a href="https://t.me/<?= Html::encode($user->telegram); ?>" class="link link--block link--tg"><?= Html::encode($user->telegram); ?></a>
+                    <a href="https://t.me/<?= Html::encode($user->telegram); ?>" 
+                    class="link link--block link--tg"><?= Html::encode($user->telegram); ?></a>
                 </li>
             </ul>
         </div>

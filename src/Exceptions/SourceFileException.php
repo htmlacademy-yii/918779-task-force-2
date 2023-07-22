@@ -2,6 +2,6 @@
 
 namespace Taskforce\Exceptions;
 
-class SourceFileException extends \Exception {
-
+class SourceFileException extends \Exception
+{
 }

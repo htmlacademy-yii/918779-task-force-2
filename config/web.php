@@ -73,8 +73,8 @@ $config = [
             'datetimeFormat' => 'php:j F, H:i',
             'sizeFormatBase' => 1000,
             'decimalSeparator' => '.',
-            'numberFormatterOptions' => [\NumberFormatter::MIN_FRACTION_DIGITS => 0, \NumberFormatter::MAX_FRACTION_DIGITS => 2],
-            
+            'numberFormatterOptions' => [\NumberFormatter::MIN_FRACTION_DIGITS => 0,
+            \NumberFormatter::MAX_FRACTION_DIGITS => 2],
         ],
 
         'authClientCollection' => [

@@ -5,8 +5,8 @@ namespace Taskforce\Actions;
 use Yii;
 use Taskforce\Tasks;
 
-class RefusedAction extends DefaultAction {
-
+class RefusedAction extends DefaultAction
+{
     public const ACTION_REFUSED = 'refused';
     public const ACTION_CLASS = 'button button--orange action-btn';
     public const ACTION_DATA = 'refusal';
@@ -16,7 +16,7 @@ class RefusedAction extends DefaultAction {
      *
      * @return string
      */
-    public function getInternalName():string
+    public function getInternalName(): string
     {
         return self::ACTION_REFUSED;
     }
@@ -27,7 +27,7 @@ class RefusedAction extends DefaultAction {
      * @return string
      */
 
-    public function getTitle():string
+    public function getTitle(): string
     {
         return 'Отказаться от задания';
     }
@@ -47,7 +47,7 @@ class RefusedAction extends DefaultAction {
      *
      * @return string
      */
-    public function getData():string
+    public function getData(): string
     {
         return self::ACTION_DATA;
     }
@@ -62,5 +62,3 @@ class RefusedAction extends DefaultAction {
         return $this->idExecutor === $idUser;
     }
 };
-
-?>

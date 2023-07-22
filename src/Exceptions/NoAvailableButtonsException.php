@@ -2,6 +2,6 @@
 
 namespace Taskforce\Exceptions;
 
-class NoAvailableButtonsException extends \Exception {
-
+class NoAvailableButtonsException extends \Exception
+{
 }

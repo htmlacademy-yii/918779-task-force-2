@@ -2,6 +2,6 @@
 
 namespace Taskforce\Exceptions;
 
-class NoSourceDataException extends \Exception {
-
+class NoSourceDataException extends \Exception
+{
 }

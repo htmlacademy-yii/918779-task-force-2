@@ -3,19 +3,15 @@
 namespace app\controllers;
 
 use yii;
-
 use yii\web\Controller;
-
 use app\models\RegistrationForm;
 use app\models\City;
-
 use yii\web\Response;
-
 use yii\bootstrap5\ActiveForm;
 use yii\helpers\ArrayHelper;
 
-class RegistrationController extends Controller {
-
+class RegistrationController extends Controller
+{
     public function actionIndex()
     {
 

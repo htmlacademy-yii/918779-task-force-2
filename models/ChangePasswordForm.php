@@ -18,7 +18,7 @@ class ChangePasswordForm extends Model
         return
         [
             [['new_password', 'repeat_password', 'current_password', 'contacts'], 'string'],
-            [['repeat_password'], 'compare', 'compareAttribute'=>'new_password'],
+            [['repeat_password'], 'compare', 'compareAttribute' => 'new_password'],
             ['new_password', 'checkPassword'],
             [['contacts'], 'default', 'value' => 'show'],
             ['current_password', 'validatePassword'],
@@ -36,38 +36,46 @@ class ChangePasswordForm extends Model
         ];
     }
 
+    /**
+     * Validate Password
+     *
+     */
+
     public function validatePassword($attribute, $params)
     {
         if (!$this->hasErrors()) {
-          $user = Yii::$app->user->getIdentity();
+            $user = Yii::$app->user->getIdentity();
             if (!$user->validatePassword($this->current_password)) {
                 $this->addError($attribute, 'Неправильный пароль');
             }
         }
     }
 
+    /**
+     * Check Password
+     *
+     */
     public function checkPassword($attribute, $params)
     {
-        if ($this->current_password === $this->new_password)
-        {
+        if ($this->current_password === $this->new_password) {
             $this->addError($attribute, 'Введите пароль отличный от текущего');
         }
 
-        if (empty($this->current_password))
-        {
+        if (empty($this->current_password)) {
             $this->addError($attribute, 'Введите текущий парлоль');
         }
     }
 
-
-
+    /**
+     * Change Password
+     *
+     */
     public function changePassword()
     {
         $user = User::findOne(Yii::$app->user->getId());
-    
-        if ($this->new_password)
-        {
-            $user->password = Yii::$app->getSecurity()->generatePasswordHash($this->new_password);     
+
+        if ($this->new_password) {
+            $user->password = Yii::$app->getSecurity()->generatePasswordHash($this->new_password);
         }
         $user->contacts = $this->contacts ? User::HIDE_CONTACTS : User::SHOW_CONTACTS;
 

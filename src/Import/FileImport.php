@@ -2,4 +2,6 @@
 
 namespace Taskforce\Import;
 
-class FileImport extends BasicImport {}
+class FileImport extends BasicImport
+{
+}

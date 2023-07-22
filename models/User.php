@@ -33,8 +33,8 @@ use yii\web\IdentityInterface;
  */
 class User extends ActiveRecord implements IdentityInterface
 {
-    const HIDE_CONTACTS = 'hide';
-    const SHOW_CONTACTS = 'show';
+    public const HIDE_CONTACTS = 'hide';
+    public const SHOW_CONTACTS = 'show';
 
     /**
      * {@inheritdoc}
@@ -109,7 +109,8 @@ class User extends ActiveRecord implements IdentityInterface
             [['email'], 'unique'],
             [['phone'], 'unique'],
             [['telegram'], 'unique'],
-            [['city_id'], 'exist', 'skipOnError' => true, 'targetClass' => City::className(), 'targetAttribute' => ['city_id' => 'id']],
+            [['city_id'], 'exist', 'skipOnError' => true,
+            'targetClass' => City::className(), 'targetAttribute' => ['city_id' => 'id']],
         ];
     }
 
@@ -143,7 +144,8 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getCategories()
     {
-        return $this->hasMany(Category::className(), ['id' => 'category_id'])->viaTable('specialization', ['user_id' => 'id']);
+        return $this->hasMany(Category::className(), [
+        'id' => 'category_id'])->viaTable('specialization', ['user_id' => 'id']);
     }
 
     /**
@@ -203,17 +205,23 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getUserStats(): array
     {
-        $totalReview = Review::find()->where(['user_id' => $this->id])->sum('stats');
-        $countReview = Review::find()->where('stats > 0')->andWhere(['user_id' => $this->id])->count('stats');
-        $countFailedTasks = Task::find()->where(['user_id' => $this->id, 'status' => Tasks::STATUS_FAILED])->count('id');
-        if (($countReview + $countFailedTasks) > 0)
-        {
+        $totalReview = Review::find()
+        ->where(['user_id' => $this->id])
+        ->sum('stats');
+        $countReview = Review::find()
+        ->where('stats > 0')
+        ->andWhere(['user_id' => $this->id])
+        ->count('stats');
+        $countFailedTasks = Task::find()
+        ->where([
+        'user_id' => $this->id, 'status' => Tasks::STATUS_FAILED])
+        ->count('id');
+        if (($countReview + $countFailedTasks) > 0) {
             $this->stats = $totalReview / ($countReview + $countFailedTasks);
+        } else {
+            $this->stats = $totalReview;
         }
-        else {
-            $this->stats = $totalReview; 
-        }
-        
+
         $this->save();
 
         $position = User::find()
@@ -248,21 +256,22 @@ class User extends ActiveRecord implements IdentityInterface
      * @return string
      */
 
-    public function getUserStatus(): string 
+    public function getUserStatus(): string
     {
         $userStatus = 'Открыт для новых заказов';
         $this->status = Tasks::USER_STATUS_FREE;
 
-        $count = Task::find()->where(['user_id' => $this->id])->andWhere(['status' =>Tasks::STATUS_WORKING])->count();
+        $count = Task::find()
+        ->where(['user_id' => $this->id])
+        ->andWhere(['status' => Tasks::STATUS_WORKING])
+        ->count();
 
-
-        if ($count > 0)
-        {
+        if ($count > 0) {
             $this->status = Tasks::USER_STATUS_BUSY;
             $userStatus = 'Занят';
-        }           
+        }
         $this->save();
-        
+
         return $userStatus;
     }
 }

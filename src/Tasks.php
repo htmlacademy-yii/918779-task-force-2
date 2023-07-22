@@ -13,22 +13,22 @@ use yii;
 
 class Tasks
 {
-    const STATUS_NEW = 'new';
-    const STATUS_CANCELED = 'canceled';
-    const STATUS_WORKING = 'working';
-    const STATUS_DONE = 'done';
-    const STATUS_FAILED = 'failed';
+    public const STATUS_NEW = 'new';
+    public const STATUS_CANCELED = 'canceled';
+    public const STATUS_WORKING = 'working';
+    public const STATUS_DONE = 'done';
+    public const STATUS_FAILED = 'failed';
 
-    const FILTER_NEW = 'new';
-    const FILTER_WORKING = 'working';
-    const FILTER_CLOSED = 'closed';
-    const FILTER_OVERDUE = 'overdue';
+    public const FILTER_NEW = 'new';
+    public const FILTER_WORKING = 'working';
+    public const FILTER_CLOSED = 'closed';
+    public const FILTER_OVERDUE = 'overdue';
 
     public const CUSTOMER = 'customer';
     public const EXECUTOR = 'executor';
 
-    const USER_STATUS_FREE = 'free';
-    const USER_STATUS_BUSY = 'busy';
+    public const USER_STATUS_FREE = 'free';
+    public const USER_STATUS_BUSY = 'busy';
 
     private $status;
 
@@ -56,15 +56,18 @@ class Tasks
         ],
     ];
 
-    private function setIdCustomer ($idUser) {
+    private function setIdCustomer($idUser)
+    {
         $this->idCustomer = $idUser;
     }
 
-    private function setIdExecutor ($idUser) {
+    private function setIdExecutor($idUser)
+    {
         $this->idExecutor = $idUser;
     }
 
-    public function __construct(string $status, int $idCustomer, int $idExecutor = null) {
+    public function __construct(string $status, int $idCustomer, int $idExecutor = null)
+    {
         $this->setIdCustomer($idCustomer);
         $this->setIdExecutor($idExecutor);
         $this->status = $status;
@@ -96,7 +99,7 @@ class Tasks
      *
      * @return array
      */
-    public static function getMapStatuses(): array 
+    public static function getMapStatuses(): array
     {
         return self::$mapStatuses;
     }
@@ -106,7 +109,7 @@ class Tasks
      *
      * @return array
      */
-    public static function getMapActions(): array 
+    public static function getMapActions(): array
     {
         return self::$mapActions;
     }
@@ -116,7 +119,8 @@ class Tasks
      *
      * @return string
      */
-    public function getStatusByAction(string $action): string {
+    public function getStatusByAction(string $action): string
+    {
         return self::NEXT_STATUS[$action] ?? '';
     }
 
@@ -135,7 +139,8 @@ class Tasks
      *
      * @return object
      */
-    public function getAvailableAction(int $idUser): ?object   {
+    public function getAvailableAction(int $idUser): ?object
+    {
 
         switch ($this->status) {
             case self::STATUS_NEW:
@@ -164,6 +169,5 @@ class Tasks
         }
 
         return $availableAction ?? null;
-    }    
+    }
 }
-?>

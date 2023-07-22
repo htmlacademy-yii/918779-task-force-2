@@ -2,6 +2,6 @@
 
 namespace Taskforce\Exceptions;
 
-class NoUpdateTaskException extends \Exception {
-
+class NoUpdateTaskException extends \Exception
+{
 }

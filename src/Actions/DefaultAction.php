@@ -2,8 +2,8 @@
 
 namespace Taskforce\Actions;
 
-abstract class DefaultAction {
-
+abstract class DefaultAction
+{
     private $idUser;
 
     public function __construct(int $idCustomer, int $idExecutor = null)
@@ -46,7 +46,4 @@ abstract class DefaultAction {
      * @return bool
      */
     abstract public function checkRights(int $idUser): bool;
-
 };
-
-?>

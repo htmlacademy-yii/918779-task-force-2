@@ -76,6 +76,7 @@ class Category extends \yii\db\ActiveRecord
      */
     public function getUsers()
     {
-        return $this->hasMany(User::className(), ['id' => 'user_id'])->viaTable('specialization', ['category_id' => 'id']);
+        return $this->hasMany(User::className(), [
+        'id' => 'user_id'])->viaTable('specialization', ['category_id' => 'id']);
     }
 }

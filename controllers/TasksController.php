@@ -4,7 +4,6 @@ namespace app\controllers;
 
 use yii;
 use yii\web\Controller;
-
 use app\models\AddTaskForm;
 use app\models\TaskFilterForm;
 use app\models\AddResponseForm;
@@ -15,16 +14,14 @@ use app\models\Category;
 use app\models\Response;
 use app\models\User;
 use Taskforce\Tasks;
-
 use yii\bootstrap5\ActiveForm;
 use yii\helpers\ArrayHelper;
-
 use yii\web\NotFoundHttpException;
 use yii\data\ActiveDataProvider;
 use yii\data\Pagination;
 
-class TasksController extends AccessController {
-
+class TasksController extends AccessController
+{
     public function behaviors()
     {
         $rules = parent::behaviors();
@@ -41,7 +38,8 @@ class TasksController extends AccessController {
         return $rules;
     }
 
-    public function actionIndex() {
+    public function actionIndex()
+    {
 
         $filter = new TaskFilterForm();
 
@@ -73,7 +71,7 @@ class TasksController extends AccessController {
         ]);
     }
 
-    public function actionView (int $id)
+    public function actionView(int $id)
     {
 
         $task = Task::findOne($id);
@@ -104,7 +102,9 @@ class TasksController extends AccessController {
             'query' => Response::find()
                 ->where(['task_id' => $id])
                 ->joinWith(['user', 'task'])
-                ->andWhere(['OR', ['AND', ['task.user_id' => $idCurrent]], ['AND', ['response.user_id' => $idCurrent]]]),
+                ->andWhere(['OR', [
+                'AND', ['task.user_id' => $idCurrent]], [
+                'AND', ['response.user_id' => $idCurrent]]]),
             'sort' => ['defaultOrder' => ['id' => SORT_DESC]]
         ]);
 
@@ -119,34 +119,32 @@ class TasksController extends AccessController {
 
         $taskActions = new Tasks($task->status, $idCustomer, $idExecutor);
 
-        $action = (int)$taskResponses === $defaultResponses ? $taskActions->getAvailableAction($idCurrent) : null;
+        $action = (int)$taskResponses === $defaultResponses ?
+        $taskActions->getAvailableAction($idCurrent) : null;
 
         $status = $taskActions->getStatusName($task->status);
 
         $newResponse = new AddResponseForm();
 
-            if (Yii::$app->request->getIsPost())
-            {
-                $newResponse->load(Yii::$app->request->post());
+        if (Yii::$app->request->getIsPost()) {
+            $newResponse->load(Yii::$app->request->post());
 
-                if($newResponse->validate())
-                {
-                    $newResponse->addResponse($task->id);
-                    return $this->refresh();
-                }
+            if ($newResponse->validate()) {
+                $newResponse->addResponse($task->id);
+                return $this->refresh();
             }
+        }
 
         $newReview = new AddReviewForm();
 
-            if (Yii::$app->request->getIsPost()) {
-                $newReview->load(Yii::$app->request->post());
+        if (Yii::$app->request->getIsPost()) {
+            $newReview->load(Yii::$app->request->post());
 
-                    if ($newReview->validate())
-                    {
-                        $newReview->addReview($task->id);
-                        return $this->refresh();
-                    }
+            if ($newReview->validate()) {
+                $newReview->addReview($task->id);
+                return $this->refresh();
             }
+        }
 
         return $this->render('view', [
             'newResponse' => $newResponse,
@@ -159,46 +157,46 @@ class TasksController extends AccessController {
         ]);
     }
 
-   public function actionAccept(int $id)
-   {
-      $response = Response::findOne($id);
-      $task = Task::findOne($response->task_id);
-      $user = User::findOne($response->user_id);
+    public function actionAccept(int $id)
+    {
+        $response = Response::findOne($id);
+        $task = Task::findOne($response->task_id);
+        $user = User::findOne($response->user_id);
 
-      if (!$task || !$user || !$response) {
-         throw new SourceDataException('Данное действие не может быть выполнено!');
-     }
+        if (!$task || !$user || !$response) {
+            throw new SourceDataException('Данное действие не может быть выполнено!');
+        }
 
-     $task->status = TASKS::STATUS_WORKING;
-     $response->position = 'accepted';
-     $task->save();
-     $response->save();
+        $task->status = TASKS::STATUS_WORKING;
+        $response->position = 'accepted';
+        $task->save();
+        $response->save();
 
-     $this->redirect('/tasks/view/' . $response->task_id);
-   }
+        $this->redirect('/tasks/view/' . $response->task_id);
+    }
 
-   public function actionRefuse(int $id)
-   {
-      $response = Response::findOne($id);
-      $response->position = 'refused';
-      $response->save();
+    public function actionRefuse(int $id)
+    {
+        $response = Response::findOne($id);
+        $response->position = 'refused';
+        $response->save();
 
-      return $this->redirect(['tasks/view', 'id' => $response->task_id]);
-   }
+        return $this->redirect(['tasks/view', 'id' => $response->task_id]);
+    }
 
-   public function actionReject(int $id)
-   {
+    public function actionReject(int $id)
+    {
 
-    $task = Task::findOne($id);
-    $task->status = Tasks::STATUS_FAILED;
+        $task = Task::findOne($id);
+        $task->status = Tasks::STATUS_FAILED;
 
-    $task->save();
+        $task->save();
 
-    $user = User::findOne($task->user_id);
-    $user->updateStats();
+        $user = User::findOne($task->user_id);
+        $user->updateStats();
 
-      return $this->redirect(['tasks/view', 'id' => $task->id]);
-   }
+        return $this->redirect(['tasks/view', 'id' => $task->id]);
+    }
 
     public function actionAdd()
     {
@@ -211,9 +209,7 @@ class TasksController extends AccessController {
             $form->load(Yii::$app->request->post());
 
             if ($form->validate()) {
-
-                if($form->location && !$form->lat && !$form->lng)
-                {
+                if ($form->location && !$form->lat && !$form->lng) {
                     $addresses = AutocompleteController::getGeocoder($form->location);
 
                     $form->lat = $addresses[0]['lat'];
@@ -232,32 +228,30 @@ class TasksController extends AccessController {
         ]);
     }
 
-    public function actionMy()    
+    public function actionMy()
     {
 
         $idCurrent = Yii::$app->user->getId();
 
-        if (Yii::$app->user->identity->role === Tasks::CUSTOMER) 
-        {
-            $filter = !empty(Yii::$app->request->get('filter')) ? Yii::$app->request->get('filter') : Tasks::FILTER_NEW;
+        if (Yii::$app->user->identity->role === Tasks::CUSTOMER) {
+            $filter = !empty(Yii::$app->request->get('filter')) ?
+            Yii::$app->request->get('filter') : Tasks::FILTER_NEW;
 
             $statusFilters = [
                 'new' => Tasks::STATUS_NEW,
                 'working' => Tasks::STATUS_WORKING,
                 'closed' => [Tasks::STATUS_CANCELED, Tasks::STATUS_DONE, Tasks::STATUS_FAILED],
             ];
-        
+
             $tasks = Task::find()
             ->where(['task.user_id' => $idCurrent, 'task.status' => $statusFilters[$filter]])
             ->joinWith(['category', 'city', 'responses'])
             ->all();
-        
         }
 
-        if (Yii::$app->user->identity->role === Tasks::EXECUTOR) 
-        {
-
-            $filter = !empty(Yii::$app->request->get('filter')) ? Yii::$app->request->get('filter') : Tasks::FILTER_WORKING;
+        if (Yii::$app->user->identity->role === Tasks::EXECUTOR) {
+            $filter = !empty(Yii::$app->request->get('filter')) ?
+            Yii::$app->request->get('filter') : Tasks::FILTER_WORKING;
 
             $statusFilters = [
                 'working' => Tasks::STATUS_WORKING,

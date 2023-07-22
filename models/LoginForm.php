@@ -1,5 +1,7 @@
 <?php
+
 namespace app\models;
+
 use yii\base\Model;
 
 class LoginForm extends Model
@@ -7,7 +9,7 @@ class LoginForm extends Model
     public $email;
     public $password;
 
-    private $_user;
+    private $currentUser;
 
     public function rules()
     {
@@ -27,12 +29,16 @@ class LoginForm extends Model
         }
     }
 
+    /**
+     * Get User
+     *
+     */
     public function getUser()
     {
-        if ($this->_user === null) {
-            $this->_user = User::findOne(['email' => $this->email]);
+        if ($this->currentUser === null) {
+            $this->currentUser = User::findOne(['email' => $this->email]);
         }
 
-        return $this->_user;
+        return $this->currentUser;
     }
 }
