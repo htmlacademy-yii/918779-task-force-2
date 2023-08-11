@@ -57,4 +57,4 @@ class DoneAction extends DefaultAction
     {
         return $this->idCustomer === $idUser;
     }
-};
+}

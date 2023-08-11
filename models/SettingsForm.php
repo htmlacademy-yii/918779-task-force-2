@@ -68,7 +68,7 @@ class SettingsForm extends Model
         ];
     }
 
-    /**
+/**
      * Edit Profile
      *
      */
@@ -97,7 +97,6 @@ class SettingsForm extends Model
         if ($this->telegram) {
             $user->telegram = $this->telegram;
         }
-
         if ($this->info) {
             $user->info = $this->info;
         }
@@ -107,7 +106,7 @@ class SettingsForm extends Model
         if ($this->avatar) {
             $newname = uniqid('avatar') . '.' . $this->avatar->getExtension();
             $this->avatar->saveAs('@webroot/uploads/avatars/' . $newname);
-                $user->avatar = 'uploads/avatars/' . $newname;
+            $user->avatar = '/' . 'uploads/avatars/' . $newname;
         }
 
         $transaction = \Yii::$app->db->beginTransaction();
@@ -115,7 +114,6 @@ class SettingsForm extends Model
             if (!$user->save()) {
                 throw new NoEditSettingsException("Не удалось изменить настройки");
             }
-
             $this->getSpecialization($user);
             $transaction->commit();
         } catch (\Exception $e) {

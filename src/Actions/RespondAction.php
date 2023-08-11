@@ -56,4 +56,4 @@ class RespondAction extends DefaultAction
     {
         return $this->idExecutor !== $idUser || Yii::$app->user->identity->role === Tasks::EXECUTOR;
     }
-};
+}

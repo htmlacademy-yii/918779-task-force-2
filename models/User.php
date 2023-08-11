@@ -103,7 +103,7 @@ class User extends ActiveRecord implements IdentityInterface
             [['city_id', 'token'], 'integer'],
             [['name', 'email'], 'string', 'max' => 128],
             [['avatar', 'password'], 'string', 'max' => 255],
-            ['avatar', 'default', 'value' => 'img/avatars/1.png' ],
+            ['avatar', 'default', 'value' => '/img/avatars/1.png' ],
             [['phone'], 'string', 'max' => 12],
             [['telegram'], 'string', 'max' => 64],
             [['email'], 'unique'],
@@ -250,7 +250,7 @@ class User extends ActiveRecord implements IdentityInterface
         return $userAge->format('%y');
     }
 
-        /**
+    /**
      * Gets user status.
      *
      * @return string

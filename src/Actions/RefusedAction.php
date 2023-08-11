@@ -61,4 +61,4 @@ class RefusedAction extends DefaultAction
     {
         return $this->idExecutor === $idUser;
     }
-};
+}

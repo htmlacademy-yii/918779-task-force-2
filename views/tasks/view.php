@@ -16,7 +16,7 @@ $this->title = 'Просмотр задания';
 <main class="main-content container">
     <div class="left-column">
         <div class="head-wrapper">
-            <h3 class="head-main"><?= $task->title; ?></h3>
+            <h3 class="head-main"><?= Html::encode($task->title); ?></h3>
             <p class="price price--big"><?= Html::encode($task->estimate) ?> ₽</p>
         </div>
         <p class="task-description">
@@ -43,6 +43,7 @@ $this->title = 'Просмотр задания';
                 'itemView' => 'responsesList',
                 'layout' =>  '<h4 class="head-regular">Отклики на задание</h4>{items}',
                 'emptyText' => false,
+                'viewParams' => ['reviewsCount' => $reviewsCount],
             ]);
             ?>
     </div>
@@ -68,7 +69,7 @@ $this->title = 'Просмотр задания';
             <ul class="enumeration-list">
                 <?php foreach ($attachments as $attachment) : ?>
                 <li class="enumeration-item">
-                    <a href="<?= Url::to(['/uploads', 'id' => $attachment->path]); ?>" 
+                    <a href="<?= Url::to(['/uploads', 'id' => Html::encode($attachment->path)]); ?>" 
                     class="link link--block link--clip"><?= Html::encode($attachment->title) ?></a>
                     <p class="file-size"><?= Yii::$app->formatter->asShortSize($attachment->size); ?></p>
                 </li>
