@@ -46,4 +46,4 @@ abstract class DefaultAction
      * @return bool
      */
     abstract public function checkRights(int $idUser): bool;
-};
+}

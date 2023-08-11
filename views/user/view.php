@@ -13,7 +13,7 @@ $this->title = 'Профиль пользователя';
         <h3 class="head-main"><?= Html::encode($user->name); ?></h3>
         <div class="user-card">
             <div class="photo-rate">
-                <img class="card-photo" src="/<?= Html::encode(Yii::$app->user->getIdentity()->avatar); ?>"
+                <img class="card-photo" src="<?= Html::encode(Yii::$app->user->getIdentity()->avatar); ?>"
                 width="191" height="191" alt="Фото пользователя">
                 <div class="card-rate">
                     <?php echo StarRating::widget([
@@ -63,6 +63,7 @@ $this->title = 'Профиль пользователя';
                 'emptyText' => false,
             ]);
             ?>
+
     </div>
     <div class="right-column">
         <div class="right-card black">

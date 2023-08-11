@@ -59,4 +59,4 @@ class CancelAction extends DefaultAction
     {
         return $this->idCustomer === $idUser;
     }
-};
+}

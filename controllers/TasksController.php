@@ -5,18 +5,19 @@ namespace app\controllers;
 use yii;
 use yii\web\Controller;
 use app\models\AddTaskForm;
-use app\models\TaskFilterForm;
 use app\models\AddResponseForm;
 use app\models\AddReviewForm;
+use app\models\TaskFilterForm;
 use app\models\Task;
 use app\models\Attachment;
 use app\models\Category;
 use app\models\Response;
+use app\models\Review;
 use app\models\User;
 use Taskforce\Tasks;
+use Taskforce\TasksData;
 use yii\bootstrap5\ActiveForm;
 use yii\helpers\ArrayHelper;
-use yii\web\NotFoundHttpException;
 use yii\data\ActiveDataProvider;
 use yii\data\Pagination;
 
@@ -40,16 +41,12 @@ class TasksController extends AccessController
 
     public function actionIndex()
     {
-
         $filter = new TaskFilterForm();
-
         $tasks = $filter->getTasks();
-
         $categories = Category::find()->all();
 
         if (Yii::$app->request->getIsget()) {
             $filter->load(Yii::$app->request->get());
-
             if ($filter->validate()) {
                 $tasks = $filter->apply();
             }
@@ -73,53 +70,17 @@ class TasksController extends AccessController
 
     public function actionView(int $id)
     {
+        $model = new TasksData($id);
+        $task = $model->getTask();
+        $idCurrent = Yii::$app->user->getId();
 
-        $task = Task::findOne($id);
-        if (!$task) {
-            throw new NotFoundHttpException("Задача с ID $id не найдена");
-        }
+        $attachments = $model->getAttachments();
+        $responses = $model->getResponses();
+        $reviewsCount = $model->getReviewsCount();
+        $taskResponses = $model->getTaskResponses();
+        $taskActions = $model->getTaskActions();
 
-        $attachments = Attachment::find()
-        ->where(['task_id' => $id])
-        ->all();
-
-        $idCurrent = Yii::$app->user->getId(); //32
-
-        $taskExecutor = Response::find($id)
-        ->where(['user_id' => $idCurrent])
-        ->andWhere(['position' => Response::POSITION_ACCEPTED])
-        ->one();
-
-        $idExecutor = $taskExecutor->user_id ?? null;
-        $idCustomer = $task->user_id;
-
-        $tasks = Task::find()
-        ->where(['status' => Task::STATUS_NEW])
-        ->joinWith(['category', 'city', 'responses'])
-        ->orderBy(['creation' => SORT_DESC]);
-
-        $responses = new ActiveDataProvider([
-            'query' => Response::find()
-                ->where(['task_id' => $id])
-                ->joinWith(['user', 'task'])
-                ->andWhere(['OR', [
-                'AND', ['task.user_id' => $idCurrent]], [
-                'AND', ['response.user_id' => $idCurrent]]]),
-            'sort' => ['defaultOrder' => ['id' => SORT_DESC]]
-        ]);
-
-        $defaultResponses = 0;
-
-        $taskResponses = Response::find($id)
-        ->select('response.task_id')
-        ->where(['response.task_id' => $id, 'response.user_id' => $idCurrent])
-        ->joinwith(['task'])
-        ->andWhere(['task.status' => Task::STATUS_NEW])
-        ->count();
-
-        $taskActions = new Tasks($task->status, $idCustomer, $idExecutor);
-
-        $action = (int)$taskResponses === $defaultResponses ?
+        $action = $taskResponses === TasksData::DEFAULT_RESPONSES ?
         $taskActions->getAvailableAction($idCurrent) : null;
 
         $status = $taskActions->getStatusName($task->status);
@@ -128,7 +89,6 @@ class TasksController extends AccessController
 
         if (Yii::$app->request->getIsPost()) {
             $newResponse->load(Yii::$app->request->post());
-
             if ($newResponse->validate()) {
                 $newResponse->addResponse($task->id);
                 return $this->refresh();
@@ -139,7 +99,6 @@ class TasksController extends AccessController
 
         if (Yii::$app->request->getIsPost()) {
             $newReview->load(Yii::$app->request->post());
-
             if ($newReview->validate()) {
                 $newReview->addReview($task->id);
                 return $this->refresh();
@@ -153,7 +112,8 @@ class TasksController extends AccessController
             'attachments' => $attachments,
             'status' => $status,
             'action' => $action,
-            'responses' => $responses
+            'responses' => $responses,
+            'reviewsCount' => $reviewsCount
         ]);
     }
 
@@ -167,7 +127,7 @@ class TasksController extends AccessController
             throw new SourceDataException('Данное действие не может быть выполнено!');
         }
 
-        $task->status = TASKS::STATUS_WORKING;
+        $task->status = Tasks::STATUS_WORKING;
         $response->position = 'accepted';
         $task->save();
         $response->save();
@@ -186,12 +146,9 @@ class TasksController extends AccessController
 
     public function actionReject(int $id)
     {
-
         $task = Task::findOne($id);
         $task->status = Tasks::STATUS_FAILED;
-
         $task->save();
-
         $user = User::findOne($task->user_id);
         $user->updateStats();
 
@@ -274,10 +231,8 @@ class TasksController extends AccessController
         }
 
         return $this->render('my', [
-
             'tasks' => $tasks,
             'filter' => $filter
-
         ]);
     }
 }

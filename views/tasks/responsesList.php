@@ -4,20 +4,35 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use Taskforce\Tasks;
 use app\models\Response;
+use app\models\Review;
+use kartik\rating\StarRating;
+
+$this->registerJsFile('/js/rating.js');
 
 ?>
 
 <div class="response-card">
-    <img class="customer-photo" src="/<?= Html::encode($model->user->avatar); ?>" 
+    <img class="customer-photo" src="<?= Html::encode($model->user->avatar); ?>" 
     width="146" height="156" alt="Фото заказчика">
         <div class="feedback-wrapper">
             <a href="<?= Url::to(['/user/view', 'id' => $model->user_id]); ?>" 
             class="link link--block link--big"><?= Html::encode($model->user->name) ?></a>
             <div class="response-wrapper">
-                <div class="stars-rating small"><span class="fill-star">&nbsp;</span>
-                <span class="fill-star">&nbsp;</span><span class="fill-star">&nbsp;</span>
-                <span class="fill-star">&nbsp;</span><span>&nbsp;</span></div>
-                    <p class="reviews">2 отзыва</p>
+                <?php echo StarRating::widget([
+                'name' => 'stars-rating-small',
+                'value' => $model->user->stats,
+                'pluginOptions' => [
+                'filledStar' => '<img src="/img/star-fill.svg"></img>',
+                'emptyStar' => '<img src="/img/star-empty.svg"></img>',
+                'step' => 0.1,
+                'size' => 'xs',
+                'readonly' => true,
+                'showClear' => false,
+                'showCaption' => false,
+                'display' => 'none'
+                ],
+            ]); ?>
+            <p class="reviews"><?= Html::encode($reviewsCount); ?> отзыва</p>
             </div>
             <p class="response-message">
                 <?= Html::encode($model->comment); ?>

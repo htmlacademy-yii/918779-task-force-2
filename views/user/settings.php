@@ -33,7 +33,7 @@ $this->title = 'Мой профиль';
             <div class="photo-editing">
                 <div>
                     <p class="form-label">Аватар</p>
-                    <img class="avatar-preview" src="/<?= Html::encode(Yii::$app->user->getIdentity()->avatar); ?>" 
+                    <img class="avatar-preview" src="<?= Html::encode(Yii::$app->user->getIdentity()->avatar); ?>" 
                     width="83" height="83">
                 </div>
                 <?= $form->field($model, 'avatar', ['template' => '{input}{label}'])

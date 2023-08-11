@@ -74,6 +74,23 @@ abstract class BasicImport
         }
     }
 
+    public function getColumnNames(): string
+    {
+        $row = $this->columns[0];
+        $row = implode(", ", $row);
+        return $row;
+    }
+
+    public function toSQLRow(array $row): string
+    {
+        $row = array_map(function ($row) {
+            return "'{$row}'";
+        },
+        $row);
+        $row = implode(", ", $row);
+        return $row;
+    }
+
     private function getHeaderData(): ?array
     {
         $this->fileObject->rewind();
@@ -91,21 +108,4 @@ abstract class BasicImport
 
         return $result;
     }
-
-    public function getColumnNames(): string
-    {
-        $row = $this->columns[0];
-        $row = implode(", ", $row);
-        return $row;
-    }
-
-    public function toSQLRow(array $row): string
-    {
-        $row = array_map(function ($row) {
-            return "'{$row}'";
-        },
-        $row);
-        $row = implode(", ", $row);
-        return $row;
-    }
-};
+}

@@ -9,11 +9,12 @@ use kartik\rating\StarRating;
 ?>
 
 <div class="response-card">
-    <img class="customer-photo" src="/<?= Html::encode($model->task->user->avatar); ?>" 
+    <img class="customer-photo" src="<?= Html::encode($model->task->user->avatar); ?>" 
     width="120" height="127" alt="Фото заказчиков">
     <div class="feedback-wrapper">
         <p class="feedback">«<?= Html::encode($model->comment); ?>»</p>
-        <p class="task">Задание «<a href="#" class="link link--small">
+        <p class="task">Задание «<a href="<?= Url::to(['tasks/view',
+        'id' => $model->task_id]); ?>" class="link link--small">
         <?= Html::encode($model->task->title); ?></a>» выполнено</p>
     </div>
     <div class="feedback-wrapper">

@@ -44,7 +44,7 @@ class UserController extends Controller
     public function actionView($id)
     {
 
-        $idCurrent = Yii::$app->user->getId(); //36
+        $idCurrent = Yii::$app->user->getId();
         $user = User::findOne($id);
         if (!$user) {
             throw new NotFoundHttpException("Пользователь с ID $id не найден");
@@ -59,7 +59,8 @@ class UserController extends Controller
 
         return $this->render('view', [
             'user' => $user,
-            'reviews' => $reviews
+            'reviews' => $reviews,
+            'count' => $reviewsCount
             ]);
     }
 
@@ -80,7 +81,11 @@ class UserController extends Controller
             }
         }
 
-        return $this->render('settings', ['model' => $model, 'categories' => $categories, 'type' => $type]);
+        return $this->render('settings', [
+            'model' => $model,
+            'categories' => $categories,
+            'type' => $type,
+            'settings' => $settings]);
     }
 
     public function actionLogout()
